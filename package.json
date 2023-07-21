@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "yarn lint && vue-tsc && vite build",
-    "preview": "vite preview",
+    "preview": "yarn build && vite preview",
     "lint": "eslint ."
   },
   "dependencies": {
