@@ -1,0 +1,28 @@
+:root,
+:before,
+:after {
+  --font-family-inter: 'Inter', sans-serif;
+  --font-family-nunito: 'Nunito', sans-serif;
+
+  --bg-primary: #070708;
+  --bg-secondary: #0F0F10;
+  --bg-tertiary: #1E1E1F;
+
+  --border-secondary: #424243;
+  --border-tertiary: #252526;
+
+  --text-primary: #F5F5F5;
+  --text-secondary: #A6A6A6;
+  --text-invert: #0F0F10;
+
+  --state-info-secondary: #111720;
+  --state-error-secondary: #1F1210;
+  --state-success-secondary: #161F18;
+
+  --overlay: rgba(29, 29, 29, 0.85);
+
+  --state-error-primary: #F87C58;
+
+  --disable-primary: #414141;
+  --disable-secondary: #606060;
+}

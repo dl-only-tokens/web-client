@@ -1,0 +1,22 @@
+@use 'sass:map';
+
+$media-breakpoints: (
+  mobile: 480px,
+  medium: 768px,
+);
+
+@mixin respond-to ($media) {
+  $breakpoint: map.get($media-breakpoints, $media);
+
+  @if $breakpoint {
+    @media (max-width: ($breakpoint)) {
+      @content;
+    }
+  }
+
+  @else {
+    @media (max-width: ($media)) {
+      @content;
+    }
+  }
+}
