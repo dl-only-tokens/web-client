@@ -93,7 +93,7 @@ export const useNotifications = () => {
       },
       {
         icon: false,
-        timeout: 3000,
+        timeout: 5000,
         hideProgressBar: true,
         type: messageType,
       },

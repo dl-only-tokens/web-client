@@ -56,7 +56,7 @@ watch(address, init)
         <span>{{ formatUnits(accountBalance, token.decimals.value) }}</span>
         <span>{{ token.symbol.value }}</span>
       </div>
-      <app-button name="Send" @click="() => (isModalShown = true)" />
+      <app-button v-if="toBn(accountBalance).isGreaterThan(0)" name="Send" @click="() => (isModalShown = true)" />
       <app-modal :is-shown="isModalShown" title="Send" @update:is-shown="() => (isModalShown = false)">
         <app-modal-header title="Send" @update:is-shown="() => (isModalShown = false)" />
         <form-kit type="form" :actions="false" :incomplete-message="false" @submit="onClickSendProcess">
