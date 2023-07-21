@@ -13,7 +13,8 @@
   },
   "plugins": [
     "@typescript-eslint",
-    "prettier"
+    "prettier",
+    "simple-import-sort"
   ],
   "extends": [
     "eslint:recommended",
@@ -33,14 +34,20 @@
         "singleQuote": true,
         "bracketSpacing": true,
         "bracketSameLine": false,
-        "arrowParens": "avoid",
+        "arrowParens": "avoid"
       }
     ],
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
     "no-return-await": "error",
     "object-curly-spacing": ["error", "always"],
     "no-var": "error",
     "linebreak-style": ["error", "unix"],
-    "generator-star-spacing": 0,
-    "no-console": "error"
+    "generator-star-spacing": "off",
+    "no-console": "error",
+    "padding-line-between-statements": ["error", { "blankLine": "always", "prev": "*", "next": "return" }],
+    "vue/multi-word-component-names": "off",
+    "vue/component-definition-name-casing": ["error", "kebab-case"],
+    "vue/component-name-in-template-casing": ["error", "kebab-case"]
   }
 }

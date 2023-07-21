@@ -1,5 +1,8 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
+import '@/styles/index.scss'
 
-createApp(App).mount('#app')
+import { createApp } from 'vue'
+
+import App from '@/App.vue'
+import { formkitConfig, formkitPlugin, pinia, router, Toast } from '@/plugins'
+
+createApp(App).use(Toast).use(formkitPlugin, formkitConfig).use(router).use(pinia).mount('#app')
