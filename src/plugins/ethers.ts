@@ -1,19 +1,25 @@
 import { ethers } from 'ethers'
 
-const generateWallet = () => {
+export const generateWallet = () => {
   const wallet = ethers.Wallet.createRandom()
 
   return { address: wallet.address, privateKey: wallet.privateKey }
 }
 
-const restoreWalletFromPrivateKey = (privateKey: string) => {
+export const restoreWalletFromPrivateKey = (privateKey: string) => {
   const wallet = new ethers.Wallet(privateKey)
 
   return { address: wallet.address, privateKey }
 }
 
-const isEtherAddress = (address: string) => {
-  return ethers.isAddress(address)
+export const isEtherAddress = (address: string) => {
+  return ethers.utils.isAddress(address)
 }
 
-export { generateWallet, isEtherAddress, restoreWalletFromPrivateKey }
+export const stringToBytes = (str: string): string => {
+  return ethers.utils.hexlify(ethers.utils.toUtf8Bytes(str))
+}
+
+export const getRandomHexString = (): string => {
+  return ethers.utils.hexlify(ethers.utils.randomBytes(32))
+}

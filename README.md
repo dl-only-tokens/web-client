@@ -1,18 +1,12 @@
-# Vue 3 + TypeScript + Vite
+fa1afb7a:573dbb222ba4c6b93aa2a89443146b19ad9e2c2511630b3700cc99f74acff38f:5:97;
+Checkout.vue?t=1691654318231:106 0x66613161666237613a353733646262323232626134633662393361613261383934343331343662313961643965326332353131363330623337303063633939663734616366663338663a353a39373b
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Type Support For `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+### Run
+1. Install packages: run `yarn` or `npm i`;
+2. Copy `.env.example` to `.env` and setup it;
+3. Start project: run `yarn dev` or `npm run dev`;
+---
+### Checkout guide
+1. Go to page /checkout/{<i>address</i>} - where `address` this is token receiver address;
+2. Connect your  Metamask wallet;
+3. Transfer a small number of tokens to the recipient, for example 0.00001 ETH;
