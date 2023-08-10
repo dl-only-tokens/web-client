@@ -18,11 +18,14 @@ header {
   justify-content: center;
   align-items: center;
   padding: 24px 24px 0 24px;
+  margin-bottom: 32px;
+  background: var(--bg-primary);
 
   @include respond-to(mobile) {
     padding: 16px 16px 0 16px;
     min-height: 72px;
     height: 72px;
+    margin-bottom: 16px;
   }
 
   div {

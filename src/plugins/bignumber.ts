@@ -16,12 +16,17 @@ const parseEther = (value: BigNumberInput, decimals: number = 18) => {
   return toBn(value).multipliedBy(toBn(10).pow(decimals))
 }
 
-const formatUnits = (value: BigNumberInput, decimals: number = 18, format: boolean = true): string => {
+const formatUnits = (
+  value: BigNumberInput,
+  decimals: number = 18,
+  format: boolean = true,
+  decimalPlaces = 4,
+): string => {
   const bn = toBn(value).dividedBy(toBn(10).pow(decimals))
 
   let result = '0'
   if (format) {
-    result = bn.toFormat(4)
+    result = bn.toFormat(decimalPlaces)
 
     let reg = /[0]*$/
     result = result.replace(reg, '')
@@ -29,7 +34,7 @@ const formatUnits = (value: BigNumberInput, decimals: number = 18, format: boole
     reg = /[.]*$/
     result = result.replace(reg, '')
   } else {
-    result = bn.toFixed(4)
+    result = bn.toFixed(decimalPlaces)
   }
 
   return result

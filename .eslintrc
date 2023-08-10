@@ -44,7 +44,7 @@
     "no-var": "error",
     "linebreak-style": ["error", "unix"],
     "generator-star-spacing": "off",
-    "no-console": "error",
+    "no-console": ["error", { "allow": ["error"] }],
     "padding-line-between-statements": ["error", { "blankLine": "always", "prev": "*", "next": "return" }],
     "vue/multi-word-component-names": "off",
     "vue/component-definition-name-casing": ["error", "kebab-case"],

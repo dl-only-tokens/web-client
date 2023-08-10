@@ -13,7 +13,9 @@ defineProps<{
     <transition name="fade">
       <span v-if="!loaded">{{ name }}</span>
     </transition>
-    <app-loader v-if="loaded" class="loader" type="dark" />
+    <transition name="fade-loader">
+      <app-loader v-if="loaded" class="loader" type="dark" />
+    </transition>
   </app-button-container>
 </template>
 
@@ -40,16 +42,27 @@ button {
 
   .loader {
     height: 24px;
+    position: absolute;
   }
 }
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease-out;
+  transition: opacity 0.2s ease-out;
 }
 
 .fade-enter-from,
 .fade-leave-to {
+  opacity: 0;
+}
+
+.fade-loader-enter-active,
+.fade-loader-leave-active {
+  transition-delay: 0.2s;
+}
+
+.fade-loader-enter-from,
+.fade-loader-leave-to {
   opacity: 0;
 }
 </style>

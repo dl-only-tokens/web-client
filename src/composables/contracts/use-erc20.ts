@@ -1,5 +1,4 @@
-import { Contract, ethers } from 'ethers'
-import { TransactionResponse } from 'ethers'
+import { Contract, ethers, providers } from 'ethers'
 import { storeToRefs } from 'pinia'
 import { ref, toRaw } from 'vue'
 
@@ -39,7 +38,7 @@ export const useERC20 = (contractAddress?: string) => {
     return (await _instance.balanceOf(address)).toString()
   }
 
-  const transferSigned = async (to: string, amount: string): Promise<TransactionResponse | null> => {
+  const transferSigned = async (to: string, amount: string): Promise<providers.TransactionResponse | null> => {
     try {
       if (!defaultProvider.value) {
         throw new Error("Default provider isn't defined")
@@ -56,7 +55,7 @@ export const useERC20 = (contractAddress?: string) => {
       const wallet = new ethers.Wallet(privateKey.value, toRaw(defaultProvider.value))
       const transferMethod = _instance.interface.encodeFunctionData('transfer', [to, amount])
 
-      const nonce = await wallet.getNonce()
+      const nonce = await wallet.getTransactionCount()
 
       const transaction = {
         to: address.value,
