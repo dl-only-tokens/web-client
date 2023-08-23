@@ -19,7 +19,7 @@ import { useNotifications } from '@/composables'
 import { config } from '@/config'
 import { ROUTE_NAMES } from '@/enums'
 import { Chain, getChainInfoById, getChainInfoByName } from '@/helpers'
-import { formatUnits, getRandomHexString, stringToBytes, useRoute, useRouter } from '@/plugins'
+import { formatUnits, getRandomHexString, parseEther, stringToBytes, useRoute, useRouter } from '@/plugins'
 import { useAccountStore, useProviderStore } from '@/store'
 
 // Configure router and params
@@ -126,7 +126,11 @@ const onClickFormSubmit = async () => {
 
   isTxInProgress.value = true
 
-  const paymentString = `fa1afb7a:${getRandomHexString().slice(2)}:${selectedNetwork.value.id}:${toDefaultNetwork.id};`
+  const amountWei = parseEther(selectedAmount.value, config.SWAP_DEFAULT_TO_DECIMALS)
+
+  const paymentString = `fa1afb7a:${getRandomHexString().slice(2)}:${selectedNetwork.value.id}:${
+    toDefaultNetwork.id
+  }:${amountWei};`
   const paymentBytesString = stringToBytes(paymentString)
 
   const bundle = ethers.utils.defaultAbiCoder.encode(
