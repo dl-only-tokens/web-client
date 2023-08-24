@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { AppIcon } from '@/components/common'
 import { ICON_NAMES } from '@/enums'
+
+import AppIcon from './AppIcon.vue'
 
 defineProps<{
   title: string

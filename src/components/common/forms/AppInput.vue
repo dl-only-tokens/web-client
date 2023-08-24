@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { FormKit } from '@formkit/vue'
 
-import FormKitStyledContainer from '@/components/common/forms/FormKitStyledContainer.vue'
 import { FORM_ERROR_MESSAGES } from '@/enums'
+
+import FormKitStyledContainer from './FormKitStyledContainer.vue'
 
 const props = withDefaults(
   defineProps<{

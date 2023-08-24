@@ -15,11 +15,11 @@ import { onMounted } from 'vue'
 
 import { AppButton, AppContainer, AppInput, AppRadio, AppRadioOptions, AppSelect } from '@/components/common'
 import { ConnectWallet } from '@/components/pages/Checkout'
-import { useNotifications } from '@/composables'
+import { useERC20, useNative, useNotifications } from '@/composables'
 import { config } from '@/config'
 import { ROUTE_NAMES } from '@/enums'
 import { Chain, getChainInfoById, getChainInfoByName } from '@/helpers'
-import { formatUnits, getRandomHexString, parseEther, stringToBytes, useRoute, useRouter } from '@/plugins'
+import { formatUnits, getRandomHexString, parseEther, stringToBytes, useRoute, useRouter, zeroAddress } from '@/plugins'
 import { useAccountStore, useProviderStore } from '@/store'
 
 // Configure router and params
@@ -34,6 +34,10 @@ providerStore.initWeb3Provider()
 
 // Configure notifications
 const notifications = useNotifications()
+
+// START configure page variables
+const isReceiverTokenNative = config.SELLER_TOKEN === zeroAddress
+const receiverToken = isReceiverTokenNative ? useNative() : useERC20()
 
 const toDefaultNetwork = getChainInfoById(config.SWAP_DEFAULT_TO_CHAIN)
 
@@ -54,21 +58,29 @@ const payInfo = ref({
 
 const isPriceConversionLoad = ref<boolean>(false)
 const isTxInProgress = ref<boolean>(false)
+// END
 
 const init = async () => {
   const provider = new Provider(EthersProvider)
-  await provider.init({
-    name: Providers.Ethers,
-    instance: toRaw(providerStore.browserProvider),
-  })
+  try {
+    await provider.init({
+      name: Providers.Ethers,
+      instance: toRaw(providerStore.browserProvider),
+    })
 
-  checkoutOperation.value = createCheckoutOperation(EVMOperation, provider)
+    await receiverToken.init(isReceiverTokenNative ? config.SWAP_DEFAULT_TO_CHAIN : config.SELLER_TOKEN)
 
-  const _supportedNetworks = await checkoutOperation.value.getSupportedChains()
-  supportedNetworks.value = _supportedNetworks.filter(v => config.SWAP_CHAINS.includes(v.id.toString()))
-  formNetworks.value = supportedNetworks.value.map(v => getChainInfoById(v.id).name)
+    checkoutOperation.value = createCheckoutOperation(EVMOperation, provider)
+
+    const _supportedNetworks = await checkoutOperation.value.getSupportedChains()
+    supportedNetworks.value = _supportedNetworks.filter(v => config.SWAP_CHAINS.includes(v.id.toString()))
+    formNetworks.value = supportedNetworks.value.map(v => getChainInfoById(v.id).name)
+  } catch {
+    console.error('Browser provider is not defined')
+  }
 }
 
+// On amount change, skip to default `payInfo`
 const onAmountChange = () => {
   _resetCurrencyForm(false)
 
@@ -78,6 +90,7 @@ const onAmountChange = () => {
   }
 }
 
+// On amount blur, recalculate available currency list
 const onAmountBlur = async (v: string) => {
   if (/^\d+.*\.$/.test(v) || /^0*$/.test(v) || !selectedNetwork.value) {
     return
@@ -87,6 +100,7 @@ const onAmountBlur = async (v: string) => {
   await _recalculateAvailableCurrencies(selectedNetwork.value, selectedAmount.value)
 }
 
+// On network change, recalculate available currency list, only if amount setted
 const onNetworkChange = async (v: string) => {
   selectedNetwork.value = getChainInfoByName(v)
   if (selectedAmount.value) {
@@ -94,6 +108,7 @@ const onNetworkChange = async (v: string) => {
   }
 }
 
+// On currency change, recalculate `payInfo`
 const onCurrencyChange = async (v: string | undefined) => {
   if (!v || !selectedAmount.value || !checkoutOperation.value) {
     return
@@ -119,6 +134,7 @@ const onCurrencyChange = async (v: string | undefined) => {
   isPriceConversionLoad.value = false
 }
 
+// Form submit
 const onClickFormSubmit = async () => {
   if (!checkoutOperation.value || !selectedCurrency.value || !selectedNetwork.value) {
     return
@@ -126,7 +142,7 @@ const onClickFormSubmit = async () => {
 
   isTxInProgress.value = true
 
-  const amountWei = parseEther(selectedAmount.value, config.SWAP_DEFAULT_TO_DECIMALS)
+  const amountWei = parseEther(selectedAmount.value, receiverToken.decimals.value)
 
   const paymentString = `fa1afb7a:${getRandomHexString().slice(2)}:${selectedNetwork.value.id}:${
     toDefaultNetwork.id
@@ -161,6 +177,7 @@ const onClickFormSubmit = async () => {
   isTxInProgress.value = false
 }
 
+// Recalculate available currencies
 const _recalculateAvailableCurrencies = async (chain: Chain, amount: string) => {
   if (!checkoutOperation.value) {
     return
@@ -177,9 +194,21 @@ const _recalculateAvailableCurrencies = async (chain: Chain, amount: string) => 
   const params = {
     chainIdFrom: chain.id,
     chainIdTo: config.SWAP_DEFAULT_TO_CHAIN,
-    price: Price.fromRaw(amount, config.SWAP_DEFAULT_TO_DECIMALS, config.SWAP_DEFAULT_TO_CURRENCY),
+    price: Price.fromRaw(
+      amount,
+      receiverToken.decimals.value,
+      receiverToken.symbol.value,
+      receiverToken.address.value === zeroAddress ? undefined : receiverToken.address.value,
+    ),
     recipient: receiver,
   }
+
+  // const params = {
+  //   chainIdFrom: chain.id,
+  //   chainIdTo: config.SWAP_DEFAULT_TO_CHAIN,
+  //   price: Price.fromRaw(amount, 18, 'ETH'),
+  //   recipient: receiver,
+  // }
 
   try {
     await checkoutOperation.value.init(params)
@@ -202,11 +231,13 @@ const _recalculateAvailableCurrencies = async (chain: Chain, amount: string) => 
   }
 }
 
+// Reset currency form
 const _resetCurrencyForm = (isLoadingLabel: boolean) => {
   selectedCurrency.value = undefined
   formCurrencies.value = [{ label: isLoadingLabel ? 'Loading...' : 'Not found', value: '0', attrs: { disabled: true } }]
 }
 
+// Setup form default values
 const _setupFormDefaultValues = () => {
   if (!accountStore.browserWallet.address) {
     return
@@ -241,7 +272,7 @@ watch(() => accountStore.browserWallet.address, _setupFormDefaultValues)
           <h2>Invoice information</h2>
           <div class="text-container">
             <p>Recipient currency</p>
-            <span>{{ config.SWAP_DEFAULT_TO_CURRENCY }}</span>
+            <span>{{ receiverToken.symbol.value.length > 0 ? receiverToken.symbol.value : '-' }}</span>
           </div>
           <div class="text-container">
             <p>Recipient address</p>
@@ -303,7 +334,7 @@ watch(() => accountStore.browserWallet.address, _setupFormDefaultValues)
                   <p>Price conversion</p>
                   <span v-if="payInfo.amountIn.length"
                     >{{ payInfo.amountIn }} {{ selectedCurrency?.symbol }} = {{ selectedAmount }}
-                    {{ config.SWAP_DEFAULT_TO_CURRENCY }}</span
+                    {{ receiverToken.symbol.value }}</span
                   >
                   <span v-else-if="!payInfo.amountIn.length && isPriceConversionLoad">Loading...</span>
                   <span v-else>0</span>

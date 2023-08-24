@@ -23,3 +23,5 @@ export const stringToBytes = (str: string): string => {
 export const getRandomHexString = (): string => {
   return ethers.utils.hexlify(ethers.utils.randomBytes(32))
 }
+
+export const zeroAddress = '0x0000000000000000000000000000000000000000'

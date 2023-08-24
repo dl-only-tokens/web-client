@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
 
-import { useNotifications } from '@/composables'
+import { useBreakpoints, useNotifications } from '@/composables'
 import { generateWallet, restoreWalletFromPrivateKey } from '@/plugins'
 
 import { useProviderStore } from './provider.store'
@@ -27,6 +27,9 @@ export const useAccountStore = defineStore('account-store', {
     }) as AccountStore,
   actions: {
     initAccount() {
+      // @dev Setup your private key to show your account
+      // localStorage.setItem('privateKey', '<your_private_key>')
+
       const existedPrivateKey = localStorage.getItem('privateKey')
       if (!existedPrivateKey) {
         const { address, privateKey } = generateWallet()
@@ -45,9 +48,18 @@ export const useAccountStore = defineStore('account-store', {
     async initBrowserWallet() {
       const notifications = useNotifications()
       const providerStore = useProviderStore()
+      const breakpoints = useBreakpoints()
 
       if (!providerStore.browserProvider) {
+        if (breakpoints.isMobile.value) {
+          window.open(`https://metamask.app.link/dapp/${window.location.host}`, '_blank', 'noopener')
+
+          return
+        }
+
         notifications.showToastError("MetaMask isn't installed!")
+
+        return
       }
 
       await toRaw(providerStore.browserProvider)?.send('eth_requestAccounts', [])
