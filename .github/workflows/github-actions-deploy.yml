@@ -11,6 +11,6 @@ jobs:
       - name: ConfigCreate
         run: |
           mkdir ~/.kube/
-          echo ${{ secrets.KUBECONFIG }} | base64 -d > config
+          echo ${{ secrets.KUBECONFIG }} > config
 #          mv config ~/.kube/
 #          ls ~/.kube/
