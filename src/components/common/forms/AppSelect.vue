@@ -3,9 +3,10 @@ import { FormKit } from '@formkit/vue'
 import { onClickOutside } from '@vueuse/core'
 import { onMounted, ref } from 'vue'
 
-import { AppIcon } from '@/components/common'
-import FormKitStyledContainer from '@/components/common/forms/FormKitStyledContainer.vue'
 import { FORM_ERROR_MESSAGES, ICON_NAMES } from '@/enums'
+
+import AppIcon from '../AppIcon.vue'
+import FormKitStyledContainer from './FormKitStyledContainer.vue'
 
 const props = defineProps<{
   name: string

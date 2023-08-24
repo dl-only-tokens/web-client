@@ -2,9 +2,10 @@
 import { FormKit } from '@formkit/vue'
 import { ref, watch } from 'vue'
 
-import { AppRadioOptions } from '@/components/common'
-import FormKitStyledContainer from '@/components/common/forms/FormKitStyledContainer.vue'
 import { FORM_ERROR_MESSAGES } from '@/enums'
+
+import FormKitStyledContainer from './FormKitStyledContainer.vue'
+import { AppRadioOptions } from './types'
 
 const props = defineProps<{
   name: string

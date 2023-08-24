@@ -3,7 +3,6 @@ import { storeToRefs } from 'pinia'
 
 import { AppButtonContainer, AppIcon } from '@/components/common'
 import { useNotifications } from '@/composables'
-import { config } from '@/config'
 import { ICON_NAMES } from '@/enums'
 import { useAccountStore } from '@/store'
 
@@ -11,7 +10,7 @@ const notifications = useNotifications()
 const accountStore = useAccountStore()
 const { address } = storeToRefs(accountStore)
 
-const link = `${config.DOMAIN}/checkout/${address.value?.substring(2).toLowerCase()}`
+const link = `${window.location.origin}/checkout/${address.value?.substring(2).toLowerCase()}`
 
 const onClick = () => {
   navigator.clipboard.writeText(link).then(

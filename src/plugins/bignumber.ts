@@ -31,6 +31,9 @@ const formatUnits = (
     let reg = /[0]*$/
     result = result.replace(reg, '')
 
+    reg = /(\.\d*?[1-9])?0+$/
+    result = result.replace(reg, '')
+
     reg = /[.]*$/
     result = result.replace(reg, '')
   } else {

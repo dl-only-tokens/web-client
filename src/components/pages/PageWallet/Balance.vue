@@ -1,51 +1,35 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
 import { AppButton, AppInput, AppModal, AppModalFooter, AppModalHeader } from '@/components/common'
-import { useERC20, useNotifications } from '@/composables'
-import { config } from '@/config'
+import { Erc20Contract, NativeToken, useNotifications } from '@/composables'
 import { formatUnits, parseEther, toBn } from '@/plugins'
-import { useAccountStore } from '@/store'
 
-const emit = defineEmits(['loaded'])
+const props = defineProps<{
+  sellerToken: Erc20Contract | NativeToken
+  accountBalance?: string
+  loadAccountBalance: () => Promise<void>
+}>()
 
 const notifications = useNotifications()
-const accountStore = useAccountStore()
-const { address } = storeToRefs(accountStore)
-
-const token = useERC20()
 
 const isModalShown = ref<boolean>(false)
 const isTxInProgress = ref<boolean>(false)
-const accountBalance = ref<string>()
 const enteredAmount = ref<string>('0')
-
-const init = async () => {
-  if (!address.value) {
-    return
-  }
-
-  await token.init(config.SELLER_TOKEN)
-  accountBalance.value = await token.balanceOf(address.value)
-
-  emit('loaded')
-}
 
 const onClickSendProcess = async (fields: { [key: string]: string }) => {
   try {
     isTxInProgress.value = true
-    await token.transferSigned(fields.recipient, parseEther(enteredAmount.value, token.decimals.value).toString())
-    await init()
+    await props.sellerToken.transferSigned(
+      fields.recipient,
+      parseEther(enteredAmount.value, props.sellerToken.decimals.value).toString(),
+    )
+    await props.loadAccountBalance()
     isTxInProgress.value = false
   } catch (e) {
     notifications.showToastError('An error occurred while forming a transaction.')
   }
 }
-
-init()
-
-watch(address, init)
 </script>
 
 <template>
@@ -53,8 +37,8 @@ watch(address, init)
     <h1>Total balance</h1>
     <div>
       <div>
-        <span>{{ formatUnits(accountBalance, token.decimals.value) }}</span>
-        <span>{{ token.symbol.value }}</span>
+        <span>{{ formatUnits(accountBalance, props.sellerToken.decimals.value, true, 8) }}</span>
+        <span>{{ props.sellerToken.symbol.value }}</span>
       </div>
       <app-button v-if="toBn(accountBalance).isGreaterThan(0)" name="Send" @click="() => (isModalShown = true)" />
       <app-modal :is-shown="isModalShown" title="Send" @update:is-shown="() => (isModalShown = false)">
@@ -65,7 +49,12 @@ watch(address, init)
               name="amount"
               label="Amount"
               placeholder="100"
-              :validation="`required|number|max:${formatUnits(accountBalance, token.decimals.value, false)}`"
+              :validation="`required|number|max:${formatUnits(
+                accountBalance,
+                props.sellerToken.decimals.value,
+                true,
+                8,
+              )}`"
               @change="v => (enteredAmount = v)"
             />
             <app-input name="recipient" label="Recipient address" placeholder="0x" validation="required|etherAddress" />
@@ -73,7 +62,10 @@ watch(address, init)
               <div>
                 <div class="card__item">
                   <span>Wallet balance</span>
-                  <span>{{ formatUnits(accountBalance, token.decimals.value) }} {{ token.symbol.value }}</span>
+                  <span
+                    >{{ formatUnits(accountBalance, props.sellerToken.decimals.value, true, 8) }}
+                    {{ props.sellerToken.symbol.value }}</span
+                  >
                 </div>
                 <div class="card__item">
                   <span>Transfer amount</span>
@@ -85,8 +77,10 @@ watch(address, init)
                 <span
                   >{{
                     formatUnits(
-                      toBn(accountBalance).minus(parseEther(enteredAmount, token.decimals.value)),
-                      token.decimals.value,
+                      toBn(accountBalance).minus(parseEther(enteredAmount, props.sellerToken.decimals.value)),
+                      props.sellerToken.decimals.value,
+                      true,
+                      8,
                     )
                   }}
                   USDT</span
@@ -108,6 +102,7 @@ watch(address, init)
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
 
   @include respond-to(medium) {
     gap: 12px;
@@ -127,7 +122,8 @@ watch(address, init)
       flex-direction: column;
       padding: 24px;
       gap: 16px;
-      height: auto;
+      height: 142px;
+      justify-content: center;
 
       button {
         width: 100%;
