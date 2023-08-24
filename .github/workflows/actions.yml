@@ -29,8 +29,6 @@ jobs:
 
       - name: Run Build
         run: |
-          ls -la
           . $(werf ci-env github --as-file) 
           echo "${{ secrets.STAGE_ENV }}" > .env
-          ls -ll
           werf export web --tag ghcr.io/$GITHUB_REPOSITORY:$GITHUB_SHA --dev
