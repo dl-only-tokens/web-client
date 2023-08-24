@@ -3,7 +3,7 @@ configVersion: 1
 project: "web-client"
 ---
 image: builder
-from: node:14.4-alpine3.11
+from: node:14.14-alpine3.12
 git:
   - add: /
     to: /app
