@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AppLoader } from '@/components/common'
+import AppLoader from './AppLoader.vue'
 
 const props = defineProps<{
   isHide?: boolean
@@ -19,7 +19,7 @@ const props = defineProps<{
 <style scoped lang="scss">
 .page-loader {
   position: absolute;
-  top: 0;
+  top: 80px;
   left: 0;
   width: 100%;
   background: var(--bg-primary);
@@ -29,7 +29,7 @@ const props = defineProps<{
   justify-content: center;
   align-items: center;
   gap: 24px;
-  height: 100%;
+  height: calc(100% - 136px);
   transition: all 0.2s ease-in;
   z-index: 1;
 

@@ -1,5 +1,10 @@
 <script setup lang="ts">
+import { useProviderStore } from '@/store'
+
 import { AppHeader } from './components/common'
+
+const providerStore = useProviderStore()
+providerStore.initDefaultProvider()
 </script>
 
 <template>

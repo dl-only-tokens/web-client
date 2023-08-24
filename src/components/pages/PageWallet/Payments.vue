@@ -2,85 +2,32 @@
 import { ref } from 'vue'
 
 import { AppIcon } from '@/components/common'
+import { Erc20Contract, NativeToken } from '@/composables'
 import { ICON_NAMES } from '@/enums'
 
+import { PaymentTransfer } from '../PageWallet.vue'
+
 defineProps<{
-  address: string
+  sellerToken: Erc20Contract | NativeToken
+  payments?: PaymentTransfer[]
 }>()
 
-const emit = defineEmits(['loaded'])
-
-const data = ref()
 const activeRows = ref<{ [key: number]: boolean }>({})
-
-const init = async () => {
-  data.value = [
-    {
-      date: '19-04-2022',
-      time: '10:18',
-      amount: '100',
-      currency: 'USDT',
-      networkFrom: {
-        name: 'Ethereum',
-        txHash: '0xa39915d7b6a4678fbcae281a28e10d2h0958e2e80bcb98a89b897a9dfe23c665',
-      },
-      networkTo: {
-        name: 'Polygon',
-        txHash: '0xa39915d7b6a4678fbcae281a28e10d2h0958e2e80bcb98a89b897a9dfe23c665',
-      },
-      sender: '0x19ec1E4b714990620edf41fE28e9a1552953a7F4',
-    },
-    {
-      date: '19-04-2022',
-      time: '10:18',
-      amount: '9999.9999',
-      currency: 'USDT',
-      networkFrom: {
-        name: 'Ethereum',
-        txHash: '0xa39915d7b6a4678fbcae281a28e10d2h0958e2e80bcb98a89b897a9dfe23c665',
-      },
-      networkTo: {
-        name: 'Polygon',
-        txHash: '0xa39915d7b6a4678fbcae281a28e10d2h0958e2e80bcb98a89b897a9dfe23c665',
-      },
-      sender: '0x19ec1E4b714990620edf41fE28e9a1552953a7F4',
-    },
-    {
-      date: '19-04-2022',
-      time: '10:18',
-      amount: '9999.9999',
-      currency: 'USDT',
-      networkFrom: {
-        name: 'Ethereum',
-        txHash: '0xa39915d7b6a4678fbcae281a28e10d2h0958e2e80bcb98a89b897a9dfe23c665',
-      },
-      networkTo: {
-        name: 'Polygon',
-        txHash: '0xa39915d7b6a4678fbcae281a28e10d2h0958e2e80bcb98a89b897a9dfe23c665',
-      },
-      sender: '0x19ec1E4b714990620edf41fE28e9a1552953a7F4',
-    },
-  ]
-
-  emit('loaded')
-}
 
 const onClickPaymentRow = (i: number) => {
   activeRows.value[i] = !activeRows.value[i]
 }
-
-init()
 </script>
 
 <template>
   <section class="payments">
     <h1>Payments</h1>
     <div>
-      <div v-if="!data.length" class="payment__not-found">
+      <div v-if="!payments || !payments.length" class="payment__not-found">
         <app-icon :name="ICON_NAMES.closeFlag" />
         <span>Payments for this address were not found</span>
       </div>
-      <div v-for="(payment, i) in data" :key="i" :class="{ payment__row: true, active: activeRows[i] }">
+      <div v-for="(payment, i) in payments" :key="i" :class="{ payment__row: true, active: activeRows[i] }">
         <div class="row">
           <span>{{ i + 1 }}</span>
           <p>
@@ -96,14 +43,14 @@ init()
           <div class="row__info-block">
             <div>
               <span>TxHash in {{ payment.networkFrom.name }}</span>
-              <a href="#">View on explorer</a>
+              <a :href="payment.networkFrom.explorerLink" target="_blank">View on explorer</a>
             </div>
             <span>{{ payment.networkFrom.txHash }}</span>
           </div>
           <div class="row__info-block">
             <div>
               <span>TxHash in {{ payment.networkTo.name }}</span>
-              <a href="#">View on explorer</a>
+              <a :href="payment.networkTo.explorerLink" target="_blank">View on explorer</a>
             </div>
             <span>{{ payment.networkTo.txHash }}</span>
           </div>

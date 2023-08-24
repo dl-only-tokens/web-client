@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { AppButtonContainer, AppLoader } from '@/components/common'
+import AppLoader from '../AppLoader.vue'
+import AppButtonContainer from './AppButtonContainer.vue'
 
 defineProps<{
   name: string
