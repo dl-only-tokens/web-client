@@ -13,4 +13,4 @@ jobs:
           mkdir ~/.kube/
           echo ${{ secrets.KUBECONFIG }} | base64 -d > config
           mv config ~/.kube/
-          export KUBECONFIG=~/.kube/config
+          ls ~/.kube/
