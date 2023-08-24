@@ -1,0 +1,17 @@
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: ConfigCreate
+        run: |
+          mkdir ~/.kube/
+          echo ${{ secrets.KUBECONFIG }} | base64 -d > config
+          mv config ~/.kube/
+          export KUBECONFIG=~/.kube/config
+          ls -la ~/.kube/
