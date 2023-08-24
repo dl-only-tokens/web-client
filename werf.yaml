@@ -36,3 +36,4 @@ import:
     add: /app/dist
     to: /usr/share/nginx/html
     after: setup
+
