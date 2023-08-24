@@ -12,5 +12,5 @@ jobs:
         run: |
           mkdir ~/.kube/
           echo ${{ secrets.KUBECONFIG }} | base64 -d > config
-          mv config ~/.kube/
-          ls ~/.kube/
+#          mv config ~/.kube/
+#          ls ~/.kube/
