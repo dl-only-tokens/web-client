@@ -7,7 +7,7 @@ import { Balance, PaymentLink, Payments } from '@/components/pages/PageWallet'
 import { useERC20, useNative, useOnlyTokensApi } from '@/composables'
 import { config } from '@/config'
 import { getChainInfoById } from '@/helpers'
-import { formatUnits, zeroAddress } from '@/plugins'
+import { formatUnits, toBn, zeroAddress } from '@/plugins'
 import { useAccountStore } from '@/store'
 
 export type PaymentTransfer = {
@@ -145,7 +145,10 @@ init()
         :load-account-balance="loadAccountBalance"
       />
     </transition>
-    <transition name="payments-transition">
+    <transition
+      :name="`${toBn(accountBalance).isGreaterThan(0) ? 'payments-transition-withdraw' : 'payments-transition'}`"
+    >
+      <!-- <transition name="payments-transition"> -->
       <payments v-if="isRender.payments" :seller-token="sellerToken" :payments="paymentsData" />
     </transition>
   </app-container>
@@ -158,7 +161,9 @@ init()
 .total-balance-transition-enter-active,
 .total-balance-transition-leave-active,
 .payments-transition-enter-active,
-.payments-transition-leave-active {
+.payments-transition-leave-active,
+.payments-transition-withdraw-enter-active,
+.payments-transition-withdraw-leave-active {
   transition: all 1s ease;
   position: absolute;
   width: calc(100% - 48px);
@@ -173,7 +178,9 @@ init()
 .total-balance-transition-enter-from,
 .total-balance-transition-leave-to,
 .payments-transition-enter-from,
-.payments-transition-leave-to {
+.payments-transition-leave-to,
+.payments-transition-withdraw-enter-from,
+.payments-transition-withdraw-leave-to {
   opacity: 0;
 }
 
@@ -209,12 +216,23 @@ init()
   top: 292px;
 
   @include respond-to(mobile) {
+    top: 258px;
+  }
+}
+
+.payments-transition-withdraw-enter-active,
+.payments-transition-withdraw-leave-active {
+  top: 292px;
+
+  @include respond-to(mobile) {
     top: 318px;
   }
 }
 
 .payments-transition-enter-from,
-.payments-transition-leave-to {
+.payments-transition-leave-to,
+.payments-transition-withdraw-enter-from,
+.payments-transition-withdraw-leave-to {
   top: 372px;
 }
 

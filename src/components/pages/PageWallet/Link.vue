@@ -60,6 +60,7 @@ const onClick = () => {
       text-align: left;
       display: flex;
       flex: 1;
+      word-break: break-all;
     }
 
     .app-icon {

@@ -25,6 +25,10 @@ providerStore.initDefaultProvider()
 @mixin slide-position {
   position: absolute;
   padding-top: 112px;
+
+  @include respond-to(mobile) {
+    padding-top: 88px;
+  }
 }
 
 // When new slide coming

@@ -136,7 +136,12 @@ const onCurrencyChange = async (v: string | undefined) => {
 
 // Form submit
 const onClickFormSubmit = async () => {
-  if (!checkoutOperation.value || !selectedCurrency.value || !selectedNetwork.value) {
+  if (
+    !checkoutOperation.value ||
+    !selectedCurrency.value ||
+    !selectedNetwork.value ||
+    !accountStore.browserWallet.address
+  ) {
     return
   }
 
@@ -144,9 +149,13 @@ const onClickFormSubmit = async () => {
 
   const amountWei = parseEther(selectedAmount.value, receiverToken.decimals.value)
 
-  const paymentString = `fa1afb7a:${getRandomHexString().slice(2)}:${selectedNetwork.value.id}:${
-    toDefaultNetwork.id
-  }:${amountWei};`
+  const paymentId = getRandomHexString().slice(2)
+  const toChainId = toDefaultNetwork.id
+  const fromChainId = selectedNetwork.value.id
+  const currency = selectedCurrency.value.symbol
+  const sender = accountStore.browserWallet.address.slice(2)
+
+  const paymentString = `fa1afb7a:${paymentId}:${fromChainId}:${toChainId}:${amountWei}:${currency}:${receiver}:${sender};`
   const paymentBytesString = stringToBytes(paymentString)
 
   const bundle = ethers.utils.defaultAbiCoder.encode(

@@ -122,7 +122,7 @@ const onClickSendProcess = async (fields: { [key: string]: string }) => {
       flex-direction: column;
       padding: 24px;
       gap: 16px;
-      height: 142px;
+      height: auto;
       justify-content: center;
 
       button {
