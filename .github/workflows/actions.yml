@@ -32,3 +32,16 @@ jobs:
           . $(werf ci-env github --as-file) 
           echo "${{ secrets.STAGE_ENV }}" > .env
           werf export web --tag ghcr.io/$GITHUB_REPOSITORY:$GITHUB_SHA --dev
+
+  deploy:
+    name: Deploy
+    needs: converge
+    runs-on: ubuntu-latest
+    steps:
+      - name: ConfigCreate
+        run: |
+          mkdir ~/.kube/
+          echo "${{ secrets.KUBECONFIG }}" > config
+          mv config ~/.kube/
+          ls ~/.kube/
+          kubectl set image deployment/onlytokens-webclient  webclient=ghcr.io/$GITHUB_REPOSITORY:$GITHUB_SHA -n only-tokens
