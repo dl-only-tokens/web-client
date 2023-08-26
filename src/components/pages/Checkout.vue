@@ -152,7 +152,7 @@ const onClickFormSubmit = async () => {
   const paymentId = getRandomHexString().slice(2)
   const toChainId = toDefaultNetwork.id
   const fromChainId = selectedNetwork.value.id
-  const currency = selectedCurrency.value.symbol
+  const currency = receiverToken.symbol.value
   const sender = accountStore.browserWallet.address.slice(2)
 
   const paymentString = `fa1afb7a:${paymentId}:${fromChainId}:${toChainId}:${amountWei}:${currency}:${receiver}:${sender};`
@@ -211,13 +211,6 @@ const _recalculateAvailableCurrencies = async (chain: Chain, amount: string) => 
     ),
     recipient: receiver,
   }
-
-  // const params = {
-  //   chainIdFrom: chain.id,
-  //   chainIdTo: config.SWAP_DEFAULT_TO_CHAIN,
-  //   price: Price.fromRaw(amount, 18, 'ETH'),
-  //   recipient: receiver,
-  // }
 
   try {
     await checkoutOperation.value.init(params)
@@ -285,7 +278,7 @@ watch(() => accountStore.browserWallet.address, _setupFormDefaultValues)
           </div>
           <div class="text-container">
             <p>Recipient address</p>
-            <span>{{ receiver.toLowerCase() }}</span>
+            <span>0x{{ receiver.toLowerCase() }}</span>
           </div>
           <div class="text-container">
             <p>Recipient network</p>

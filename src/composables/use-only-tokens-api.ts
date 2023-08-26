@@ -18,6 +18,8 @@ export const useOnlyTokensApi = () => {
   const apiUrl = config.ONLY_TOKENS_API_URL
 
   const getTransfers = async (account: string): Promise<OnlyTokenApiTransfer[]> => {
+    account = account.replace('0x', '').toLowerCase()
+
     const url = `${apiUrl}/integrations/back-listener/transactions/${account}`
 
     return (await request(url)).data.attributes.transactions

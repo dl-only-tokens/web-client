@@ -63,6 +63,7 @@ const loadAccountBalance = async () => {
   }
 
   accountBalance.value = await sellerToken.balanceOf(address.value)
+
   isLoaded.value.totalBalance = true
   handleComponentsLoaded()
 }
@@ -72,7 +73,10 @@ const loadPaymentTransactions = async () => {
     return
   }
 
-  const apiTransfers = await onlyTokensApi.getTransfers(address.value)
+  const apiTransfers = await onlyTokensApi.getTransfers(address.value.slice(2))
+  apiTransfers.sort(
+    (a, b) => (new Date(b.timestamp) as unknown as number) - (new Date(a.timestamp) as unknown as number),
+  )
 
   const _payments = []
   for (const apiTransfer of apiTransfers) {
@@ -89,7 +93,7 @@ const loadPaymentTransactions = async () => {
     _payments.push({
       date: `${day}-${month}-${year}`,
       time: `${hours}:${minutes}`,
-      amount: formatUnits(apiTransfer.value_to, sellerToken.decimals.value, true, 8),
+      amount: formatUnits(apiTransfer.value_to, sellerToken.decimals.value, true, 10),
       currency: sellerToken.symbol.value,
       networkFrom: {
         name: fromChainInfo.name,
@@ -101,7 +105,7 @@ const loadPaymentTransactions = async () => {
         txHash: apiTransfer.tx_hash_to,
         explorerLink: `${toChainInfo.explorerUrl}/tx/${apiTransfer.tx_hash_to}`,
       },
-      sender: apiTransfer.sender,
+      sender: '0x' + apiTransfer.sender,
     })
   }
 
@@ -148,7 +152,6 @@ init()
     <transition
       :name="`${toBn(accountBalance).isGreaterThan(0) ? 'payments-transition-withdraw' : 'payments-transition'}`"
     >
-      <!-- <transition name="payments-transition"> -->
       <payments v-if="isRender.payments" :seller-token="sellerToken" :payments="paymentsData" />
     </transition>
   </app-container>

@@ -19,6 +19,8 @@ footer {
   gap: 32px;
   border-top: 1px solid var(--border-secondary);
   margin-top: 32px;
+  z-index: 2;
+  background: var(--bg-primary);
 
   router-link {
     font-family: var(--font-family-inter);

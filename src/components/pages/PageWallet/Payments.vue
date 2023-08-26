@@ -47,7 +47,7 @@ const onClickPaymentRow = (i: number) => {
             </div>
             <span>{{ payment.networkFrom.txHash }}</span>
           </div>
-          <div class="row__info-block">
+          <div v-if="payment.networkFrom.name !== payment.networkTo.name" class="row__info-block">
             <div>
               <span>TxHash in {{ payment.networkTo.name }}</span>
               <a :href="payment.networkTo.explorerLink" target="_blank">View on explorer</a>
@@ -154,6 +154,10 @@ const onClickPaymentRow = (i: number) => {
         display: flex;
         flex-direction: column;
 
+        * {
+          display: none;
+        }
+
         .row__info-block {
           display: flex;
           flex-direction: column;
@@ -190,6 +194,10 @@ const onClickPaymentRow = (i: number) => {
           height: 236px;
           opacity: 1;
           padding: 16px 24px;
+
+          * {
+            display: flex;
+          }
 
           @include respond-to(medium) {
             height: 276px;
