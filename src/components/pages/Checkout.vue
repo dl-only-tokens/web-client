@@ -19,7 +19,16 @@ import { useERC20, useNative, useNotifications } from '@/composables'
 import { config } from '@/config'
 import { ROUTE_NAMES } from '@/enums'
 import { Chain, getChainInfoById, getChainInfoByName } from '@/helpers'
-import { formatUnits, getRandomHexString, parseEther, stringToBytes, useRoute, useRouter, zeroAddress } from '@/plugins'
+import {
+  formatUnits,
+  getRandomHexString,
+  parseEther,
+  stringToBytes,
+  toBn,
+  useRoute,
+  useRouter,
+  zeroAddress,
+} from '@/plugins'
 import { useAccountStore, useProviderStore } from '@/store'
 
 // Configure router and params
@@ -38,6 +47,7 @@ const notifications = useNotifications()
 // START configure page variables
 const isReceiverTokenNative = config.SELLER_TOKEN === zeroAddress
 const receiverToken = isReceiverTokenNative ? useNative() : useERC20()
+const minReceiveAmount = ref()
 
 const toDefaultNetwork = getChainInfoById(config.SWAP_DEFAULT_TO_CHAIN)
 
@@ -70,6 +80,8 @@ const init = async () => {
 
     await receiverToken.init(isReceiverTokenNative ? config.SWAP_DEFAULT_TO_CHAIN : config.SELLER_TOKEN)
 
+    minReceiveAmount.value = formatUnits('1', receiverToken.decimals.value, false, receiverToken.decimals.value)
+
     checkoutOperation.value = createCheckoutOperation(EVMOperation, provider)
 
     const _supportedNetworks = await checkoutOperation.value.getSupportedChains()
@@ -93,6 +105,14 @@ const onAmountChange = () => {
 // On amount blur, recalculate available currency list
 const onAmountBlur = async (v: string) => {
   if (/^\d+.*\.$/.test(v) || /^0*$/.test(v) || !selectedNetwork.value) {
+    return
+  }
+
+  if (toBn(v).isLessThan(minReceiveAmount.value)) {
+    notifications.showToastError(
+      `The number is too low. Minimal available amount is ${minReceiveAmount.value} ${receiverToken.symbol.value}`,
+    )
+
     return
   }
 

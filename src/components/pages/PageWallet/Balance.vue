@@ -27,6 +27,14 @@ const onClickSendProcess = async (fields: { [key: string]: string }) => {
         8,
       )} ${props.sellerToken.symbol.value}.`,
     )
+
+    return
+  }
+
+  if (toBn(enteredAmount.value).isEqualTo('0')) {
+    notifications.showToastError(`Can't withdraw zero amount.`)
+
+    return
   }
 
   try {
@@ -60,7 +68,7 @@ const onClickSendProcess = async (fields: { [key: string]: string }) => {
               name="amount"
               label="Amount"
               placeholder="100"
-              :validation="`required|number`"
+              validation="required|number"
               @change="v => (enteredAmount = v)"
             />
             <app-input name="recipient" label="Recipient address" placeholder="0x" validation="required|etherAddress" />
