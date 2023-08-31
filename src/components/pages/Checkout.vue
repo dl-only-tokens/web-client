@@ -281,6 +281,10 @@ onMounted(async () => {
   _setupFormDefaultValues()
 })
 
+const test = () => {
+  router.push({ name: ROUTE_NAMES.paymentSuccess })
+}
+
 watch(() => accountStore.browserWallet.address, _setupFormDefaultValues)
 </script>
 
@@ -376,6 +380,7 @@ watch(() => accountStore.browserWallet.address, _setupFormDefaultValues)
           name="Send"
         />
       </form-kit>
+      <app-button name="AAA" @click="test" />
     </div>
   </app-container>
 </template>

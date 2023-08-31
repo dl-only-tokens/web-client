@@ -49,6 +49,7 @@ const isRender = ref({
   paymentLink: false,
   payments: false,
   totalBalance: false,
+  footer: false,
 })
 
 const init = async () => {
@@ -130,6 +131,9 @@ const handleComponentsLoaded = () => {
   setTimeout(() => {
     isRender.value.payments = true
   }, 1500)
+  setTimeout(() => {
+    isRender.value.footer = true
+  }, 3000)
 }
 
 init()
@@ -137,7 +141,7 @@ init()
 
 <template>
   <app-page-loader v-if="!isRender.paymentLink" :is-hide="!isRender.preloader" />
-  <app-container>
+  <app-container :is-footer-visible="isRender.footer">
     <transition name="payment-link-transition">
       <payment-link v-if="isRender.paymentLink" />
     </transition>

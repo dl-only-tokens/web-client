@@ -1,5 +1,14 @@
 <script setup lang="ts">
 import AppFooter from './AppFooter.vue'
+
+withDefaults(
+  defineProps<{
+    isFooterVisible?: boolean
+  }>(),
+  {
+    isFooterVisible: true,
+  },
+)
 </script>
 
 <template>
@@ -7,7 +16,7 @@ import AppFooter from './AppFooter.vue'
     <div class="app-container">
       <slot></slot>
     </div>
-    <app-footer />
+    <app-footer :is-visible="isFooterVisible" />
   </div>
 </template>
 
