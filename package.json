@@ -1,7 +1,7 @@
 {
   "name": "only-tokens",
-  "private": true,
-  "version": "0.0.0",
+  "private": false,
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -42,7 +42,6 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-vue": "^9.15.1",
     "prettier": "^3.0.0",
-    
     "vue-eslint-parser": "^9.3.1",
     "vue-tsc": "^1.8.3"
   }

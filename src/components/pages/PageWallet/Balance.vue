@@ -18,6 +18,25 @@ const isTxInProgress = ref<boolean>(false)
 const enteredAmount = ref<string>('0')
 
 const onClickSendProcess = async (fields: { [key: string]: string }) => {
+  if (toBn(props.accountBalance).isLessThan(parseEther(enteredAmount.value, props.sellerToken.decimals.value))) {
+    notifications.showToastError(
+      `Withdraw amount should be less than ${formatUnits(
+        props.accountBalance,
+        props.sellerToken.decimals.value,
+        true,
+        8,
+      )} ${props.sellerToken.symbol.value}.`,
+    )
+
+    return
+  }
+
+  if (toBn(enteredAmount.value).isEqualTo('0')) {
+    notifications.showToastError(`Can't withdraw zero amount.`)
+
+    return
+  }
+
   try {
     isTxInProgress.value = true
     await props.sellerToken.transferSigned(
@@ -49,12 +68,7 @@ const onClickSendProcess = async (fields: { [key: string]: string }) => {
               name="amount"
               label="Amount"
               placeholder="100"
-              :validation="`required|number|max:${formatUnits(
-                accountBalance,
-                props.sellerToken.decimals.value,
-                true,
-                8,
-              )}`"
+              validation="required|number"
               @change="v => (enteredAmount = v)"
             />
             <app-input name="recipient" label="Recipient address" placeholder="0x" validation="required|etherAddress" />
@@ -69,13 +83,13 @@ const onClickSendProcess = async (fields: { [key: string]: string }) => {
                 </div>
                 <div class="card__item">
                   <span>Transfer amount</span>
-                  <span>{{ enteredAmount }}</span>
+                  <span>{{ enteredAmount }} {{ props.sellerToken.symbol.value }}</span>
                 </div>
               </div>
               <div class="card__item">
                 <span>Remaining balance</span>
-                <span
-                  >{{
+                <span>
+                  {{
                     formatUnits(
                       toBn(accountBalance).minus(parseEther(enteredAmount, props.sellerToken.decimals.value)),
                       props.sellerToken.decimals.value,
@@ -83,8 +97,8 @@ const onClickSendProcess = async (fields: { [key: string]: string }) => {
                       8,
                     )
                   }}
-                  USDT</span
-                >
+                  {{ props.sellerToken.symbol.value }}
+                </span>
               </div>
             </div>
           </div>
@@ -122,7 +136,7 @@ const onClickSendProcess = async (fields: { [key: string]: string }) => {
       flex-direction: column;
       padding: 24px;
       gap: 16px;
-      height: 142px;
+      height: auto;
       justify-content: center;
 
       button {

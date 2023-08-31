@@ -52,7 +52,7 @@ export const useAccountStore = defineStore('account-store', {
 
       if (!providerStore.browserProvider) {
         if (breakpoints.isMobile.value) {
-          window.open(`https://metamask.app.link/dapp/${window.location.host}`, '_blank', 'noopener')
+          window.open(`https://metamask.app.link/dapp/${window.location.href}`, '_blank', 'noopener')
 
           return
         }

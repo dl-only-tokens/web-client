@@ -7,7 +7,7 @@ import { Balance, PaymentLink, Payments } from '@/components/pages/PageWallet'
 import { useERC20, useNative, useOnlyTokensApi } from '@/composables'
 import { config } from '@/config'
 import { getChainInfoById } from '@/helpers'
-import { formatUnits, zeroAddress } from '@/plugins'
+import { formatUnits, toBn, zeroAddress } from '@/plugins'
 import { useAccountStore } from '@/store'
 
 export type PaymentTransfer = {
@@ -49,6 +49,7 @@ const isRender = ref({
   paymentLink: false,
   payments: false,
   totalBalance: false,
+  footer: false,
 })
 
 const init = async () => {
@@ -63,6 +64,7 @@ const loadAccountBalance = async () => {
   }
 
   accountBalance.value = await sellerToken.balanceOf(address.value)
+
   isLoaded.value.totalBalance = true
   handleComponentsLoaded()
 }
@@ -72,7 +74,10 @@ const loadPaymentTransactions = async () => {
     return
   }
 
-  const apiTransfers = await onlyTokensApi.getTransfers(address.value)
+  const apiTransfers = await onlyTokensApi.getTransfers(address.value.slice(2))
+  apiTransfers.sort(
+    (a, b) => (new Date(b.timestamp) as unknown as number) - (new Date(a.timestamp) as unknown as number),
+  )
 
   const _payments = []
   for (const apiTransfer of apiTransfers) {
@@ -89,7 +94,7 @@ const loadPaymentTransactions = async () => {
     _payments.push({
       date: `${day}-${month}-${year}`,
       time: `${hours}:${minutes}`,
-      amount: formatUnits(apiTransfer.value_to, sellerToken.decimals.value, true, 8),
+      amount: formatUnits(apiTransfer.value_to, sellerToken.decimals.value, true, 10),
       currency: sellerToken.symbol.value,
       networkFrom: {
         name: fromChainInfo.name,
@@ -101,7 +106,7 @@ const loadPaymentTransactions = async () => {
         txHash: apiTransfer.tx_hash_to,
         explorerLink: `${toChainInfo.explorerUrl}/tx/${apiTransfer.tx_hash_to}`,
       },
-      sender: apiTransfer.sender,
+      sender: '0x' + apiTransfer.sender,
     })
   }
 
@@ -126,6 +131,9 @@ const handleComponentsLoaded = () => {
   setTimeout(() => {
     isRender.value.payments = true
   }, 1500)
+  setTimeout(() => {
+    isRender.value.footer = true
+  }, 3000)
 }
 
 init()
@@ -133,7 +141,7 @@ init()
 
 <template>
   <app-page-loader v-if="!isRender.paymentLink" :is-hide="!isRender.preloader" />
-  <app-container>
+  <app-container :is-footer-visible="isRender.footer">
     <transition name="payment-link-transition">
       <payment-link v-if="isRender.paymentLink" />
     </transition>
@@ -145,7 +153,9 @@ init()
         :load-account-balance="loadAccountBalance"
       />
     </transition>
-    <transition name="payments-transition">
+    <transition
+      :name="`${toBn(accountBalance).isGreaterThan(0) ? 'payments-transition-withdraw' : 'payments-transition'}`"
+    >
       <payments v-if="isRender.payments" :seller-token="sellerToken" :payments="paymentsData" />
     </transition>
   </app-container>
@@ -158,7 +168,9 @@ init()
 .total-balance-transition-enter-active,
 .total-balance-transition-leave-active,
 .payments-transition-enter-active,
-.payments-transition-leave-active {
+.payments-transition-leave-active,
+.payments-transition-withdraw-enter-active,
+.payments-transition-withdraw-leave-active {
   transition: all 1s ease;
   position: absolute;
   width: calc(100% - 48px);
@@ -173,7 +185,9 @@ init()
 .total-balance-transition-enter-from,
 .total-balance-transition-leave-to,
 .payments-transition-enter-from,
-.payments-transition-leave-to {
+.payments-transition-leave-to,
+.payments-transition-withdraw-enter-from,
+.payments-transition-withdraw-leave-to {
   opacity: 0;
 }
 
@@ -209,12 +223,23 @@ init()
   top: 292px;
 
   @include respond-to(mobile) {
+    top: 258px;
+  }
+}
+
+.payments-transition-withdraw-enter-active,
+.payments-transition-withdraw-leave-active {
+  top: 292px;
+
+  @include respond-to(mobile) {
     top: 318px;
   }
 }
 
 .payments-transition-enter-from,
-.payments-transition-leave-to {
+.payments-transition-leave-to,
+.payments-transition-withdraw-enter-from,
+.payments-transition-withdraw-leave-to {
   top: 372px;
 }
 

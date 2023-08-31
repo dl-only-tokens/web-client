@@ -20,6 +20,7 @@ header {
   padding: 24px 24px 0 24px;
   margin-bottom: 32px;
   background: var(--bg-primary);
+  z-index: 2;
 
   @include respond-to(mobile) {
     padding: 16px 16px 0 16px;

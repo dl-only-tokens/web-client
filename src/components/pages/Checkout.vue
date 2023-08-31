@@ -19,7 +19,16 @@ import { useERC20, useNative, useNotifications } from '@/composables'
 import { config } from '@/config'
 import { ROUTE_NAMES } from '@/enums'
 import { Chain, getChainInfoById, getChainInfoByName } from '@/helpers'
-import { formatUnits, getRandomHexString, parseEther, stringToBytes, useRoute, useRouter, zeroAddress } from '@/plugins'
+import {
+  formatUnits,
+  getRandomHexString,
+  parseEther,
+  stringToBytes,
+  toBn,
+  useRoute,
+  useRouter,
+  zeroAddress,
+} from '@/plugins'
 import { useAccountStore, useProviderStore } from '@/store'
 
 // Configure router and params
@@ -38,6 +47,7 @@ const notifications = useNotifications()
 // START configure page variables
 const isReceiverTokenNative = config.SELLER_TOKEN === zeroAddress
 const receiverToken = isReceiverTokenNative ? useNative() : useERC20()
+const minReceiveAmount = ref()
 
 const toDefaultNetwork = getChainInfoById(config.SWAP_DEFAULT_TO_CHAIN)
 
@@ -70,6 +80,8 @@ const init = async () => {
 
     await receiverToken.init(isReceiverTokenNative ? config.SWAP_DEFAULT_TO_CHAIN : config.SELLER_TOKEN)
 
+    minReceiveAmount.value = formatUnits('1', receiverToken.decimals.value, false, receiverToken.decimals.value)
+
     checkoutOperation.value = createCheckoutOperation(EVMOperation, provider)
 
     const _supportedNetworks = await checkoutOperation.value.getSupportedChains()
@@ -93,6 +105,14 @@ const onAmountChange = () => {
 // On amount blur, recalculate available currency list
 const onAmountBlur = async (v: string) => {
   if (/^\d+.*\.$/.test(v) || /^0*$/.test(v) || !selectedNetwork.value) {
+    return
+  }
+
+  if (toBn(v).isLessThan(minReceiveAmount.value)) {
+    notifications.showToastError(
+      `The number is too low. Minimal available amount is ${minReceiveAmount.value} ${receiverToken.symbol.value}`,
+    )
+
     return
   }
 
@@ -136,7 +156,12 @@ const onCurrencyChange = async (v: string | undefined) => {
 
 // Form submit
 const onClickFormSubmit = async () => {
-  if (!checkoutOperation.value || !selectedCurrency.value || !selectedNetwork.value) {
+  if (
+    !checkoutOperation.value ||
+    !selectedCurrency.value ||
+    !selectedNetwork.value ||
+    !accountStore.browserWallet.address
+  ) {
     return
   }
 
@@ -144,9 +169,13 @@ const onClickFormSubmit = async () => {
 
   const amountWei = parseEther(selectedAmount.value, receiverToken.decimals.value)
 
-  const paymentString = `fa1afb7a:${getRandomHexString().slice(2)}:${selectedNetwork.value.id}:${
-    toDefaultNetwork.id
-  }:${amountWei};`
+  const paymentId = getRandomHexString().slice(2)
+  const toChainId = toDefaultNetwork.id
+  const fromChainId = selectedNetwork.value.id
+  const currency = receiverToken.symbol.value
+  const sender = accountStore.browserWallet.address.slice(2)
+
+  const paymentString = `fa1afb7a:${paymentId}:${fromChainId}:${toChainId}:${amountWei}:${currency}:${receiver}:${sender};`
   const paymentBytesString = stringToBytes(paymentString)
 
   const bundle = ethers.utils.defaultAbiCoder.encode(
@@ -203,13 +232,6 @@ const _recalculateAvailableCurrencies = async (chain: Chain, amount: string) => 
     recipient: receiver,
   }
 
-  // const params = {
-  //   chainIdFrom: chain.id,
-  //   chainIdTo: config.SWAP_DEFAULT_TO_CHAIN,
-  //   price: Price.fromRaw(amount, 18, 'ETH'),
-  //   recipient: receiver,
-  // }
-
   try {
     await checkoutOperation.value.init(params)
     supportedCurrencies.value = await checkoutOperation.value.getPaymentTokens()
@@ -259,6 +281,10 @@ onMounted(async () => {
   _setupFormDefaultValues()
 })
 
+const test = () => {
+  router.push({ name: ROUTE_NAMES.paymentSuccess })
+}
+
 watch(() => accountStore.browserWallet.address, _setupFormDefaultValues)
 </script>
 
@@ -276,7 +302,7 @@ watch(() => accountStore.browserWallet.address, _setupFormDefaultValues)
           </div>
           <div class="text-container">
             <p>Recipient address</p>
-            <span>{{ receiver.toLowerCase() }}</span>
+            <span>0x{{ receiver.toLowerCase() }}</span>
           </div>
           <div class="text-container">
             <p>Recipient network</p>
@@ -354,6 +380,7 @@ watch(() => accountStore.browserWallet.address, _setupFormDefaultValues)
           name="Send"
         />
       </form-kit>
+      <app-button name="AAA" @click="test" />
     </div>
   </app-container>
 </template>
