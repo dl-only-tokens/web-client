@@ -12,10 +12,12 @@ withDefaults(
 </script>
 
 <template>
-  <footer v-if="isVisible">
-    <router-link :to="{ name: ROUTE_NAMES.termsOfUse }">Terms of use</router-link>
-    <router-link :to="{ name: ROUTE_NAMES.privacyPolicy }">Privacy Policy</router-link>
-  </footer>
+  <transition name="fade">
+    <footer v-if="isVisible">
+      <router-link :to="{ name: ROUTE_NAMES.termsOfUse }">Terms of use</router-link>
+      <router-link :to="{ name: ROUTE_NAMES.privacyPolicy }">Privacy Policy</router-link>
+    </footer>
+  </transition>
 </template>
 
 <style scoped lang="scss">
@@ -36,5 +38,16 @@ footer {
     color: var(--text-secondary);
     font-size: 16px;
   }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: 0.3s ease-out;
+  opacity: 1;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

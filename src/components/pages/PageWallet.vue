@@ -133,7 +133,7 @@ const handleComponentsLoaded = () => {
   }, 1500)
   setTimeout(() => {
     isRender.value.footer = true
-  }, 3000)
+  }, 2500)
 }
 
 init()
