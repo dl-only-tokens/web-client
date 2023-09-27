@@ -1,43 +1,42 @@
-import { createRouter, createWebHistory, RouteLocationNormalized, useRoute, useRouter } from 'vue-router'
+import { createRouter, createWebHistory, RouteLocationNormalized } from 'vue-router'
 
-import { ROUTE_NAMES } from '@/enums'
-
-import { isEtherAddress } from './ethers'
+import { ROUTE_NAME } from '@/enums'
+import { isEtherAddress } from '@/helpers'
 
 const routes = [
   {
     path: '/',
-    name: ROUTE_NAMES.main,
-    component: () => import('@/components/pages/PageWallet.vue'),
+    name: ROUTE_NAME.main,
+    component: () => import('@/components/pages/Wallet/Wallet.vue'),
   },
   {
     path: '/checkout/:receiver',
-    name: ROUTE_NAMES.checkout,
-    component: () => import('@/components/pages/Checkout.vue'),
+    name: ROUTE_NAME.checkout,
+    component: () => import('@/components/pages/Checkout/Checkout.vue'),
     beforeEnter: (to: RouteLocationNormalized) => {
       if (!isEtherAddress(to.params.receiver as string)) {
-        return { name: ROUTE_NAMES.notFound }
+        return { name: ROUTE_NAME.notFound }
       }
     },
   },
   {
     path: '/payment-success',
-    name: ROUTE_NAMES.paymentSuccess,
+    name: ROUTE_NAME.paymentSuccess,
     component: () => import('@/components/pages/PaymentSuccess.vue'),
   },
   {
     path: '/terms-of-use',
-    name: ROUTE_NAMES.termsOfUse,
+    name: ROUTE_NAME.termsOfUse,
     component: () => import('@/components/pages/TermsOfUse.vue'),
   },
   {
     path: '/privacy-policy',
-    name: ROUTE_NAMES.privacyPolicy,
+    name: ROUTE_NAME.privacyPolicy,
     component: () => import('@/components/pages/PrivacyPolicy.vue'),
   },
   {
     path: '/:pathMatch(.*)*',
-    name: ROUTE_NAMES.notFound,
+    name: ROUTE_NAME.notFound,
     component: () => import('@/components/pages/NotFound.vue'),
   },
 ]
@@ -47,4 +46,4 @@ const router = createRouter({
   routes,
 })
 
-export { router, useRoute, useRouter }
+export { router }

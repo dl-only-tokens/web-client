@@ -1,95 +1,86 @@
-import { useToast } from 'vue-toastification'
+import { TYPE, useToast } from 'vue-toastification'
 
 import { AppNotification } from '@/components/common'
-import { ICON_NAMES } from '@/enums'
+import { ICON_NAME } from '@/enums'
 
-type NotificationObjectPayload = {
-  title?: string
-  message: string
-  iconName?: ICON_NAMES
-  link?: {
-    label: string
-    href: string
-  }
-}
-
-enum TYPE {
-  SUCCESS = 'success',
-  ERROR = 'error',
-  INFO = 'info',
-}
+type NotificationPayload =
+  | string
+  | {
+      title?: string
+      message: string
+      iconName?: ICON_NAME
+      link?: {
+        label: string
+        href: string
+      }
+    }
 
 export const useNotifications = () => {
   const toast = useToast()
 
-  const showToastSuccess = (payload?: string | NotificationObjectPayload) => {
+  const showToastSuccess = (payload?: NotificationPayload) => {
     showToast(TYPE.SUCCESS, payload)
   }
 
-  const showToastError = (payload?: string | NotificationObjectPayload) => {
+  const showToastError = (payload?: NotificationPayload) => {
     showToast(TYPE.ERROR, payload)
   }
 
-  const showToastInfo = (payload?: string | NotificationObjectPayload) => {
+  const showToastInfo = (payload?: NotificationPayload) => {
     showToast(TYPE.INFO, payload)
   }
 
-  const showToast = (messageType: TYPE, payload?: string | NotificationObjectPayload): void => {
-    let title = ''
-    let message = ''
-    let iconName = ''
-    let link = {
-      label: '',
-      href: '',
+  const showToast = (messageType: TYPE, payload?: NotificationPayload): void => {
+    const payloadObj: NotificationPayload = {
+      message: '',
     }
 
-    const defaultTitles = {
+    const defaultTitlesMap = {
       [TYPE.SUCCESS]: 'Success',
       [TYPE.ERROR]: 'Error',
       [TYPE.INFO]: 'Info',
+      [TYPE.WARNING]: 'Info',
+      [TYPE.DEFAULT]: 'Info',
     }
 
     const defaultMessages = 'Notification default message'
 
-    const defaultIconNames = {
-      [TYPE.SUCCESS]: ICON_NAMES.notificationSuccess,
-      [TYPE.ERROR]: ICON_NAMES.notificationError,
-      [TYPE.INFO]: ICON_NAMES.notificationInfo,
+    const defaultIconNamesMap = {
+      [TYPE.SUCCESS]: ICON_NAME.notificationSuccess,
+      [TYPE.ERROR]: ICON_NAME.notificationError,
+      [TYPE.INFO]: ICON_NAME.notificationInfo,
+      [TYPE.WARNING]: ICON_NAME.notificationInfo,
+      [TYPE.DEFAULT]: ICON_NAME.notificationInfo,
     }
 
     if (typeof payload === 'object') {
-      const msgPayload = payload as NotificationObjectPayload
+      const msgPayload = payload
 
-      title = msgPayload.title || defaultTitles[messageType]
-      message = msgPayload.message || defaultMessages
-      iconName = msgPayload.iconName || defaultIconNames[messageType]
-      link = msgPayload.link || {
+      payloadObj.title = msgPayload.title || defaultTitlesMap[messageType]
+      payloadObj.message = msgPayload.message || defaultMessages
+      payloadObj.iconName = msgPayload.iconName || defaultIconNamesMap[messageType]
+      payloadObj.link = msgPayload.link || {
         label: '',
         href: '',
       }
     } else if (payload) {
-      message = payload as string
+      payloadObj.message = payload as string
     } else {
-      message = defaultMessages
+      payloadObj.message = defaultMessages
     }
 
-    if (!title) {
-      title = defaultTitles[messageType]
+    if (!payloadObj.title) {
+      payloadObj.title = defaultTitlesMap[messageType]
     }
 
-    if (!iconName) {
-      iconName = defaultIconNames[messageType]
+    if (!payloadObj.iconName) {
+      payloadObj.iconName = defaultIconNamesMap[messageType]
     }
 
     toast(
       {
         component: AppNotification,
-        props: {
-          title,
-          message,
-          iconName,
-          link,
-        },
+        props: payloadObj,
       },
       {
         icon: false,

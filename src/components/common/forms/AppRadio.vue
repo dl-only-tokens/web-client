@@ -2,20 +2,20 @@
 import { FormKit } from '@formkit/vue'
 import { ref, watch } from 'vue'
 
-import { FORM_ERROR_MESSAGES } from '@/enums'
+import { FORM_ERROR_MESSAGE } from '@/enums'
 
 import FormKitStyledContainer from './FormKitStyledContainer.vue'
-import { AppRadioOptions } from './types'
+import { AppRadioOption } from './types'
 
 const props = defineProps<{
   name: string
   label: string
-  options: AppRadioOptions[]
+  options: AppRadioOption[]
   validation?: string
   disabled?: boolean
 }>()
 
-const radioValue = ref()
+const radioValue = ref<string | number>()
 
 const emit = defineEmits(['change'])
 
@@ -36,7 +36,7 @@ watch(
 </script>
 
 <template>
-  <div :class="{ 'app-radio': true, disabled: disabled }">
+  <div :class="{ 'app-radio': true, 'app-radio_disabled': disabled }">
     <form-kit-styled-container>
       <form-kit
         v-model="radioValue"
@@ -45,7 +45,7 @@ watch(
         :label="label"
         :options="options"
         :validation="validation"
-        :validation-messages="FORM_ERROR_MESSAGES"
+        :validation-messages="FORM_ERROR_MESSAGE"
         :disabled="disabled"
         @input="onChange"
       />
@@ -67,7 +67,7 @@ watch(
   }
 }
 .app-radio {
-  &.disabled {
+  &.app-radio_disabled {
     legend {
       color: var(--disable-primary);
     }
@@ -81,7 +81,7 @@ watch(
 
   legend {
     color: var(--text-primary);
-    font-family: var(--font-family-inter);
+    font-family: var(--font-family-primary);
     font-size: 14px;
     line-height: 20px;
 

@@ -2,45 +2,48 @@ import BigNumber from 'bignumber.js'
 
 BigNumber.config({ ROUNDING_MODE: BigNumber.ROUND_DOWN })
 
-type BigNumberInput = string | number | undefined | BigNumber
+type BigNumberValue = string | number | undefined | BigNumber
 
-const toBn = (value: BigNumberInput) => {
-  if (!value) {
-    return new BigNumber(0)
-  }
-
-  return new BigNumber(value)
+type BigNumberOptions = {
+  decimals?: number
+  decimalPlaces?: number
+  isForDisplay?: boolean
 }
 
-const parseEther = (value: BigNumberInput, decimals: number = 18) => {
+const toBn = (value: BigNumberValue) => {
+  return new BigNumber(value || 0)
+}
+
+const parseEther = (value: BigNumberValue, decimals: number = 18) => {
   return toBn(value).multipliedBy(toBn(10).pow(decimals))
 }
 
-const formatUnits = (
-  value: BigNumberInput,
-  decimals: number = 18,
-  format: boolean = true,
-  decimalPlaces = 4,
-): string => {
-  const bn = toBn(value).dividedBy(toBn(10).pow(decimals))
+const formatUnits = (value: BigNumberValue, incomingOptions?: BigNumberOptions): string => {
+  const options = { ..._getDefaultOptions(), ...incomingOptions }
 
-  let result = '0'
-  if (format) {
-    result = bn.toFormat(decimalPlaces)
+  const bn = toBn(value).dividedBy(toBn(10).pow(options.decimals))
 
-    let reg = /[0]*$/
-    result = result.replace(reg, '')
+  let result
+  if (options.isForDisplay) {
+    result = bn.toFormat(options.decimalPlaces)
 
-    reg = /(\.\d*?[1-9])?0+$/
-    result = result.replace(reg, '')
-
-    reg = /[.]*$/
-    result = result.replace(reg, '')
+    result = result
+      .replace(/[0]*$/, '')
+      .replace(/(\.\d*?[1-9])?0+$/, '')
+      .replace(/[.]*$/, '')
   } else {
-    result = bn.toFixed(decimalPlaces)
+    result = bn.toFixed(options.decimalPlaces)
   }
 
   return result
+}
+
+const _getDefaultOptions = () => {
+  return {
+    decimals: 18,
+    decimalPlaces: 4,
+    isForDisplay: true,
+  }
 }
 
 export { formatUnits, parseEther, toBn }

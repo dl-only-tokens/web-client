@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import { AppContainer, AppIcon } from '@/components/common'
-import { ICON_NAMES } from '@/enums'
+import { ICON_NAME } from '@/enums'
 </script>
 
 <template>
   <app-container>
     <div class="not-found">
-      <app-icon :name="ICON_NAMES.flag404" />
-      <h4>Page not found</h4>
-      <span
-        >We couldn't find the page you were looking for. It looks like you've popped into a URL that doesn't
-        exist.</span
-      >
+      <app-icon :name="ICON_NAME.flag404" />
+      <h4 class="not-found__title">Page not found</h4>
+      <span class="not-found__message">
+        We couldn't find the page you were looking for. It looks like you've popped into a URL that doesn't exist.
+      </span>
     </div>
   </app-container>
 </template>
@@ -34,7 +33,7 @@ import { ICON_NAMES } from '@/enums'
     }
   }
 
-  h4 {
+  &__title {
     margin-top: 8px;
     font-size: 22px;
     font-weight: 500;
@@ -45,7 +44,7 @@ import { ICON_NAMES } from '@/enums'
     }
   }
 
-  span {
+  &__message {
     margin-top: 4px;
     text-align: center;
     color: var(--text-secondary);

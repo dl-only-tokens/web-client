@@ -3,25 +3,25 @@ import AppLoader from '../AppLoader.vue'
 import AppButtonContainer from './AppButtonContainer.vue'
 
 defineProps<{
-  name: string
+  title: string
   disabled?: boolean
-  loaded?: boolean
+  loading?: boolean
 }>()
 </script>
 
 <template>
-  <app-button-container :disabled="disabled" :loaded="loaded">
+  <app-button-container :disabled="disabled" :loading="loading">
     <transition name="fade">
-      <span v-if="!loaded">{{ name }}</span>
+      <span v-if="!loading" class="app-button-container__title">{{ title }}</span>
     </transition>
     <transition name="fade-loader">
-      <app-loader v-if="loaded" class="loader" type="dark" />
+      <app-loader v-if="loading" class="app-button-container__loader" type="dark" />
     </transition>
   </app-button-container>
 </template>
 
 <style scoped lang="scss">
-button {
+.app-button-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,8 +29,8 @@ button {
   height: 44px;
   padding: 0 20px;
 
-  span {
-    font-family: var(--font-family-inter);
+  &__title {
+    font-family: var(--font-family-primary);
     color: var(--text-text-invert);
     font-size: 14px;
     font-weight: 500;
@@ -41,7 +41,7 @@ button {
     color: var(--disable-secondary);
   }
 
-  .loader {
+  &__loader {
     height: 24px;
     position: absolute;
   }

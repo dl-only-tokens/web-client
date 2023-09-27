@@ -1,4 +1,4 @@
-export enum ICON_NAMES {
+export enum ICON_NAME {
   arrow = 'arrow',
   arrowSelect = 'arrow-select',
   closeFlag = 'close-flag',

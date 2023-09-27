@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { ICON_NAMES } from '@/enums'
+import { ICON_NAME } from '@/enums'
 
 import AppIcon from './AppIcon.vue'
 
 defineProps<{
   title: string
   message: string
-  iconName: ICON_NAMES
+  iconName: ICON_NAME
   link?: {
     label: string
     href: string
@@ -20,8 +20,8 @@ defineProps<{
       <app-icon :name="iconName" />
     </div>
     <div class="notification__details">
-      <h4>{{ title }}</h4>
-      <p>{{ message }}</p>
+      <h4 class="notification__title">{{ title }}</h4>
+      <p class="notification__message">{{ message }}</p>
       <a v-if="link" class="notification__link" :href="link.href" target="_blank">
         {{ link.label }}
       </a>
@@ -81,7 +81,7 @@ defineProps<{
   display: flex;
   gap: 16px;
 
-  .notification__icon {
+  &__icon {
     width: 48px;
     height: 48px;
     min-width: 48px;
@@ -91,27 +91,28 @@ defineProps<{
     border-radius: 8px;
   }
 
-  .notification__details {
+  &__details {
     display: flex;
     flex-direction: column;
     width: calc(100% - 64px);
+  }
 
-    h4 {
-      color: var(--text-text-primary);
-      font-family: var(--font-family-inter);
-      font-size: 16px;
-      font-weight: 500;
-      line-height: 24px;
-    }
-    p {
-      color: var(--text-secondary);
-      font-family: var(--font-family-inter);
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: 20px;
-      word-wrap: break-word;
-    }
+  &__title {
+    color: var(--text-text-primary);
+    font-family: var(--font-family-primary);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+  }
+
+  &__message {
+    color: var(--text-secondary);
+    font-family: var(--font-family-primary);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    word-wrap: break-word;
   }
 }
 

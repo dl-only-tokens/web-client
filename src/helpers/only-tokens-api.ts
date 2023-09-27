@@ -2,7 +2,7 @@ import axios from 'axios'
 
 import { config } from '@/config'
 
-type OnlyTokenApiTransfer = {
+type OnlyTokensApiTransfer = {
   network_from: string
   network_to: string
   timestamp: string
@@ -14,15 +14,16 @@ type OnlyTokenApiTransfer = {
   value_to: string
 }
 
-export const useOnlyTokensApi = () => {
+export const onlyTokensApiHelper = () => {
   const apiUrl = config.ONLY_TOKENS_API_URL
 
-  const getTransfers = async (account: string): Promise<OnlyTokenApiTransfer[]> => {
-    account = account.replace('0x', '').toLowerCase()
+  const getTransfers = async (account: string): Promise<OnlyTokensApiTransfer[]> => {
+    const accountFormatted = account.replace('0x', '').toLowerCase()
 
-    const url = `${apiUrl}/integrations/back-listener/transactions/${account}`
+    const url = `${apiUrl}/integrations/back-listener/transactions/${accountFormatted}`
+    const response = await request(url)
 
-    return (await request(url)).data.attributes.transactions
+    return response ? response.data.attributes.transactions : []
   }
 
   const request = async (url: string) => {

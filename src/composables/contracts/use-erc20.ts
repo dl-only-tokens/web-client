@@ -9,35 +9,34 @@ import { useAccountStore, useProviderStore } from '@/store'
 
 import abi from './abis/erc20.json'
 
-export interface Erc20Contract {
+export interface Erc20Interface {
   address: Ref<string>
   name: Ref<string>
   symbol: Ref<string>
   decimals: Ref<number>
-  init: (address: string) => Promise<void>
+  init: (contractAddress: string, loadMetadata?: boolean) => Promise<void>
   balanceOf: (address: string) => Promise<string>
   transferSigned: (to: string, amount: string) => Promise<providers.TransactionResponse | null>
 }
 
-export const useERC20 = (contractAddress?: string): Erc20Contract => {
+export const useERC20 = (contractAddress?: string): Erc20Interface => {
   const { defaultProvider } = storeToRefs(useProviderStore())
   const { privateKey } = storeToRefs(useAccountStore())
   const notifications = useNotifications()
 
-  let _instance: Contract | undefined = undefined
+  let _instance: Contract
 
   const address = ref<string>('')
   const name = ref<string>('')
   const symbol = ref<string>('')
   const decimals = ref<number>(0)
 
-  const init = async (contractAddress: string, uploadMetadata = true) => {
+  const init = async (contractAddress: string, loadMetadata = true) => {
     address.value = contractAddress
 
-    const contract = new ethers.Contract(contractAddress, abi, toRaw(defaultProvider.value))
-    _instance = contract
+    _instance = new ethers.Contract(contractAddress, abi, toRaw(defaultProvider.value))
 
-    if (uploadMetadata) {
+    if (loadMetadata) {
       const [_name, _symbol, _decimals] = await Promise.all([
         _instance.name(),
         _instance.symbol(),
@@ -73,12 +72,9 @@ export const useERC20 = (contractAddress?: string): Erc20Contract => {
       const wallet = new ethers.Wallet(privateKey.value, toRaw(defaultProvider.value))
       const transferMethod = _instance.interface.encodeFunctionData('transfer', [to, amount])
 
-      const nonce = await wallet.getTransactionCount()
-
       const transaction = {
         to: address.value,
         data: transferMethod,
-        nonce: nonce,
       }
 
       notifications.showToastInfo('Transaction has been sent to processing, please wait.')
@@ -97,7 +93,7 @@ export const useERC20 = (contractAddress?: string): Erc20Contract => {
 
       return tx
     } catch (e) {
-      notifications.showToastError('An error occurred while forming a transaction.')
+      notifications.showToastError('An error occurred while sending transaction.')
       // eslint-disable-next-line no-console
       console.error(e)
 

@@ -1,18 +1,18 @@
 <script setup lang="ts">
 defineProps<{
   disabled?: boolean
-  loaded?: boolean
+  loading?: boolean
 }>()
 </script>
 
 <template>
-  <button :disabled="disabled || loaded" :class="{ loaded: loaded }">
+  <button class="app-button-container" :disabled="disabled || loading" :class="{ loading: loading }">
     <slot></slot>
   </button>
 </template>
 
 <style scoped lang="scss">
-button {
+.app-button-container {
   position: relative;
   background: -webkit-linear-gradient(225deg, #b697ff 0%, #55eba5 100%);
   border-radius: 16px;
@@ -42,7 +42,7 @@ button {
     cursor: unset;
     opacity: 0.7;
 
-    &:not(.loaded) {
+    &:not(.loading) {
       background: var(--disable-primary);
     }
 

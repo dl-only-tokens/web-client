@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { ROUTE_NAMES } from '@/enums'
+import { ROUTE_NAME } from '@/enums'
 </script>
 
 <template>
-  <header>
-    <div>
-      <router-link :to="{ name: ROUTE_NAMES.main }"><span>OnlyTokens</span></router-link>
+  <header class="header">
+    <div class="header__container">
+      <router-link :to="{ name: ROUTE_NAME.main }">
+        <span class="header__title">OnlyTokens</span>
+      </router-link>
     </div>
   </header>
 </template>
 
 <style scoped lang="scss">
-header {
+.header {
   min-height: 80px;
   height: 80px;
   display: flex;
@@ -29,7 +31,7 @@ header {
     margin-bottom: 16px;
   }
 
-  div {
+  &__container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -41,7 +43,7 @@ header {
     height: 100%;
   }
 
-  span {
+  &__title {
     font-size: 16px;
     font-weight: 700;
     background: -webkit-linear-gradient(225deg, #b697ff 0%, #55eba5 100%);

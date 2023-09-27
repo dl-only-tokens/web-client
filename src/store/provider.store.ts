@@ -18,7 +18,7 @@ export const useProviderStore = defineStore('provider-store', {
     initDefaultProvider() {
       this.defaultProvider = new ethers.providers.JsonRpcProvider(config.ETHERS_PROVIDER)
     },
-    async initWeb3Provider() {
+    async iniBrowserProvider() {
       if (typeof window.ethereum === 'undefined') {
         return
       }

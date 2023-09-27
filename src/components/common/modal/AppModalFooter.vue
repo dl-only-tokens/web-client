@@ -1,11 +1,11 @@
 <template>
-  <div class="modal-pane__footer">
+  <div class="app-modal-footer">
     <slot />
   </div>
 </template>
 
 <style lang="scss">
-.modal-pane__footer {
+.app-modal-footer {
   display: flex;
   align-items: center;
   padding: 0 32px;

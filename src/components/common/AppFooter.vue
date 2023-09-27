@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ROUTE_NAMES } from '@/enums'
+import { ROUTE_NAME } from '@/enums'
 
 withDefaults(
   defineProps<{
@@ -14,8 +14,8 @@ withDefaults(
 <template>
   <transition name="fade">
     <footer v-if="isVisible">
-      <router-link :to="{ name: ROUTE_NAMES.termsOfUse }">Terms of use</router-link>
-      <router-link :to="{ name: ROUTE_NAMES.privacyPolicy }">Privacy Policy</router-link>
+      <router-link :to="{ name: ROUTE_NAME.termsOfUse }">Terms of use</router-link>
+      <router-link :to="{ name: ROUTE_NAME.privacyPolicy }">Privacy Policy</router-link>
     </footer>
   </transition>
 </template>
@@ -34,7 +34,7 @@ footer {
   background: var(--bg-primary);
 
   router-link {
-    font-family: var(--font-family-inter);
+    font-family: var(--font-family-primary);
     color: var(--text-secondary);
     font-size: 16px;
   }

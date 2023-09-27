@@ -7,18 +7,14 @@
   display: none;
 }
 
-html, body, body > div#app {
-  // height: 100%;
-  height: -webkit-fill-available;
+html, body, body > #app {
+  position: relative;
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
 
-div#app {
-  position: relative;
-}
-
-body > div:last-child {
+.modal {
   position: absolute;
 }
 
@@ -28,7 +24,7 @@ body {
 
 p, span, a {
   color: var(--text-primary);
-  font-family: var(--font-family-inter);
+  font-family: var(--font-family-primary);
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
@@ -37,7 +33,7 @@ p, span, a {
 
 h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
-  font-family: var(--font-family-nunito);
+  font-family: var(--font-family-secondary);
   font-size: 24px;
   font-style: normal;
   font-weight: 400;

@@ -4,17 +4,17 @@ import { onMounted, ref } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    isShown: boolean
+    isShow: boolean
     isCloseByClickOutside: boolean
     title?: string
   }>(),
   {
-    isShown: false,
+    isShow: false,
     isCloseByClickOutside: true,
     title: undefined,
   },
 )
-const emit = defineEmits(['update:is-shown'])
+const emit = defineEmits(['on:close'])
 
 const modalPane = ref<HTMLElement | undefined>()
 
@@ -29,15 +29,15 @@ onMounted(() => {
 })
 
 const closeModal = () => {
-  emit('update:is-shown', false)
+  emit('on:close', false)
 }
 </script>
 
 <template>
   <teleport to="body">
     <transition name="modal">
-      <div v-show="isShown" class="modal">
-        <div ref="modalPane" class="modal-pane">
+      <div v-show="isShow" class="app-modal">
+        <div ref="modalPane" class="app-modal__pane">
           <slot />
         </div>
       </div>
@@ -48,7 +48,7 @@ const closeModal = () => {
 <style lang="scss" scoped>
 $modal-z-index: 10;
 
-.modal {
+.app-modal {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -66,7 +66,7 @@ $modal-z-index: 10;
     padding: 0 24px;
   }
 
-  .modal-pane {
+  &__pane {
     background: var(--bg-primary);
     max-width: 612px;
     width: 612px;

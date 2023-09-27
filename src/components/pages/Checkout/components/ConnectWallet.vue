@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { AppButtonOutline } from '@/components/common'
-import { ICON_NAMES } from '@/enums'
+import { ICON_NAME } from '@/enums'
 import { useAccountStore } from '@/store'
 
 const accountStore = useAccountStore()
@@ -14,7 +14,7 @@ const onButtonClick = async () => {
   <transition name="fade">
     <div v-if="!accountStore.browserWallet.address" class="connect-wallet">
       <h4>To pay the invoice you need to connect a wallet</h4>
-      <app-button-outline name="Connect to Metamask" :icon-name="ICON_NAMES.metamask" @click="onButtonClick" />
+      <app-button-outline name="Connect to Metamask" :icon-name="ICON_NAME.metamask" @click="onButtonClick" />
     </div>
   </transition>
 </template>

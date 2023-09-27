@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { ICON_NAMES } from '@/enums'
+import { ICON_NAME } from '@/enums'
 
 import AppIcon from '../AppIcon.vue'
 
 defineProps<{
   name: string
-  iconName?: ICON_NAMES
+  iconName?: ICON_NAME
 }>()
 </script>
 
 <template>
-  <button>
+  <button class="app-button-outline">
     <app-icon v-if="iconName" :name="iconName"></app-icon>
     {{ name }}
   </button>
 </template>
 
 <style scoped lang="scss">
-button {
+.app-button-outline {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,7 +34,7 @@ button {
   opacity: 1;
 
   color: var(--text-primary);
-  font-family: var(--font-family-inter);
+  font-family: var(--font-family-primary);
   font-size: 14px;
   font-style: normal;
   font-weight: 500;

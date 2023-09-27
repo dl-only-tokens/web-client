@@ -3,11 +3,10 @@ import { storeToRefs } from 'pinia'
 import { Ref, ref, toRaw } from 'vue'
 
 import { useNotifications } from '@/composables'
-import { getChainInfoById } from '@/helpers'
-import { zeroAddress } from '@/plugins'
+import { getChainInfoById, zeroAddress } from '@/helpers'
 import { useAccountStore, useProviderStore } from '@/store'
 
-export interface NativeToken {
+export interface NativeInterface {
   chainId: Ref<string>
   address: Ref<string>
   name: Ref<string>
@@ -18,7 +17,7 @@ export interface NativeToken {
   transferSigned: (to: string, amount: string) => Promise<providers.TransactionResponse | null>
 }
 
-export const useNative = (chain?: string): NativeToken => {
+export const useNative = (chain?: string): NativeInterface => {
   const { defaultProvider } = storeToRefs(useProviderStore())
   const { privateKey } = storeToRefs(useAccountStore())
   const notifications = useNotifications()
@@ -29,11 +28,11 @@ export const useNative = (chain?: string): NativeToken => {
   const symbol = ref<string>('')
   const decimals = ref<number>(0)
 
-  const init = async (chain: string) => {
-    chainId.value = chain
+  const init = async (chainIdArg: string) => {
+    chainId.value = chainIdArg
     address.value = zeroAddress
 
-    const chainInfo = getChainInfoById(chain)
+    const chainInfo = getChainInfoById(chainIdArg)
 
     name.value = chainInfo.tokenName
     symbol.value = chainInfo.tokenSymbol
@@ -59,11 +58,8 @@ export const useNative = (chain?: string): NativeToken => {
 
       const wallet = new ethers.Wallet(privateKey.value, toRaw(defaultProvider.value))
 
-      const nonce = await wallet.getTransactionCount()
-
       const transaction = {
         to: to,
-        nonce: nonce,
         value: amount,
       }
 

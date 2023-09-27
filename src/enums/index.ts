@@ -1,3 +1,3 @@
-export * from './form-error-messages.enum'
-export * from './icon-names.enum'
-export * from './route-names.enum'
+export * from './form-error-message.enum'
+export * from './icon-name.enum'
+export * from './route-name.enum'

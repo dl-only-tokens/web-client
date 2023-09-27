@@ -2,16 +2,16 @@
 import AppLoader from './AppLoader.vue'
 
 const props = defineProps<{
-  isHide?: boolean
+  isHidden?: boolean
 }>()
 </script>
 
 <template>
-  <div :class="{ 'page-loader': true, hide: props.isHide }">
+  <div :class="{ 'page-loader': true, 'page-loader_hidden': props.isHidden }">
     <app-loader class="page-loader__preloader" />
-    <div class="page-loader__text">
-      <span>Wait a minute</span>
-      <span>Page is in the process of loading</span>
+    <div class="page-loader__info">
+      <span class="page-loader__info__title">Wait a minute</span>
+      <span class="page-loader__info__subtitle">Page is in the process of loading</span>
     </div>
   </div>
 </template>
@@ -33,32 +33,32 @@ const props = defineProps<{
   transition: all 0.2s ease-in;
   z-index: 1;
 
-  &.hide {
+  &_hidden {
     opacity: 0;
   }
 
-  .page-loader__preloader {
+  &__preloader {
     width: 72px;
     height: 72px;
   }
 
-  .page-loader__text {
+  &__info {
     display: flex;
     flex-direction: column;
     align-items: center;
 
-    span:first-child {
+    &__title {
       color: var(--text-primary);
       text-align: center;
-      font-family: var(--font-family-nunito);
+      font-family: var(--font-family-secondary);
       font-size: 24px;
       font-weight: 600;
       line-height: 32px;
     }
 
-    span:last-child {
+    &__subtitle {
       color: var(--text-secondary);
-      font-family: var(--font-family-inter);
+      font-family: var(--font-family-primary);
       font-size: 16px;
       font-weight: 400;
       line-height: 24px;

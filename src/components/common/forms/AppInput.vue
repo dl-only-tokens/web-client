@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FormKit } from '@formkit/vue'
 
-import { FORM_ERROR_MESSAGES } from '@/enums'
+import { FORM_ERROR_MESSAGE } from '@/enums'
 
 import FormKitStyledContainer from './FormKitStyledContainer.vue'
 
@@ -50,7 +50,7 @@ const onBlur = (e: FocusEvent) => {
 </script>
 
 <template>
-  <div :class="{ 'app-input': true, disabled: disabled }">
+  <div :class="{ 'app-input': true, 'app-input_disabled': disabled }">
     <form-kit-styled-container :disabled="disabled">
       <form-kit
         :type="type"
@@ -59,7 +59,7 @@ const onBlur = (e: FocusEvent) => {
         :placeholder="placeholder"
         :help="help"
         :validation="validation"
-        :validation-messages="FORM_ERROR_MESSAGES"
+        :validation-messages="FORM_ERROR_MESSAGE"
         :disabled="disabled"
         @input="onChange"
         @blur="onBlur"
@@ -70,7 +70,7 @@ const onBlur = (e: FocusEvent) => {
 
 <style lang="scss">
 .app-input {
-  &.disabled input {
+  &.app-input_disabled input {
     color: var(--disable-primary);
     border: 1px solid var(--disable-primary);
   }
@@ -80,7 +80,7 @@ const onBlur = (e: FocusEvent) => {
     border-radius: 8px;
     border: 1px solid var(--border-tertiary);
 
-    font-family: var(--font-family-inter);
+    font-family: var(--font-family-primary);
     font-size: 14px;
     line-height: 20px;
     color: var(--text-secondary);

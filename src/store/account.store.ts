@@ -2,16 +2,16 @@ import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
 
 import { useBreakpoints, useNotifications } from '@/composables'
-import { generateWallet, restoreWalletFromPrivateKey } from '@/plugins'
+import { generateWallet, restoreWalletFromPrivateKey } from '@/helpers'
 
 import { useProviderStore } from './provider.store'
 
 interface AccountStore {
-  privateKey: undefined | string
-  address: undefined | string
+  privateKey: string | undefined
+  address: string | undefined
   browserWallet: {
-    address: undefined | string
-    chainId: undefined | number
+    address: string | undefined
+    chainId: number | undefined
   }
 }
 
@@ -30,8 +30,8 @@ export const useAccountStore = defineStore('account-store', {
       // @dev Setup your private key to show your account
       // localStorage.setItem('privateKey', '<your_private_key>')
 
-      const existedPrivateKey = localStorage.getItem('privateKey')
-      if (!existedPrivateKey) {
+      const existingPrivateKey = localStorage.getItem('privateKey')
+      if (!existingPrivateKey) {
         const { address, privateKey } = generateWallet()
         this.address = address
         this.privateKey = privateKey
@@ -41,7 +41,7 @@ export const useAccountStore = defineStore('account-store', {
         return
       }
 
-      const { address, privateKey } = restoreWalletFromPrivateKey(existedPrivateKey)
+      const { address, privateKey } = restoreWalletFromPrivateKey(existingPrivateKey)
       this.address = address
       this.privateKey = privateKey
     },
@@ -62,7 +62,7 @@ export const useAccountStore = defineStore('account-store', {
         return
       }
 
-      await toRaw(providerStore.browserProvider)?.send('eth_requestAccounts', [])
+      await toRaw(providerStore.browserProvider).send('eth_requestAccounts', [])
 
       const signer = await toRaw(providerStore.browserProvider)?.getSigner()
       if (!signer) {

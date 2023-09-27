@@ -3,7 +3,7 @@ import { FormKit } from '@formkit/vue'
 import { onClickOutside } from '@vueuse/core'
 import { onMounted, ref } from 'vue'
 
-import { FORM_ERROR_MESSAGES, ICON_NAMES } from '@/enums'
+import { FORM_ERROR_MESSAGE, ICON_NAME } from '@/enums'
 
 import AppIcon from '../AppIcon.vue'
 import FormKitStyledContainer from './FormKitStyledContainer.vue'
@@ -42,7 +42,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div :class="{ 'app-select': true, disabled: disabled }">
+  <div :class="{ 'app-select': true, 'app-select_disabled': disabled }">
     <form-kit-styled-container :disabled="disabled">
       <form-kit
         ref="element"
@@ -52,17 +52,22 @@ onMounted(() => {
         :label="label"
         :placeholder="placeholder"
         :validation="validation"
-        :validation-messages="FORM_ERROR_MESSAGES"
+        :validation-messages="FORM_ERROR_MESSAGE"
         readonly="true"
         :config="{ validationVisibility: 'submit' }"
         @input="() => emit('change', selectValue)"
         @click="onInputClick"
       />
-      <app-icon :name="ICON_NAMES.arrowSelect" :class="{ active: isActive }" />
+      <app-icon :name="ICON_NAME.arrowSelect" :class="{ active: isActive }" />
       <transition name="options">
         <div v-if="isActive && options?.length" class="app-select__options">
-          <div v-for="option in options" :key="option" @click="() => (selectValue = option)">
-            <p>{{ option }}</p>
+          <div
+            v-for="option in options"
+            :key="option"
+            class="app-select__options__item"
+            @click="() => (selectValue = option)"
+          >
+            <p class="app-select__options__item__name">{{ option }}</p>
           </div>
         </div>
       </transition>
@@ -85,7 +90,7 @@ onMounted(() => {
 .app-select {
   position: relative;
 
-  &.disabled input {
+  &.app-select_disabled input {
     cursor: unset;
 
     color: var(--disable-primary);
@@ -109,7 +114,7 @@ onMounted(() => {
     border: 1px solid var(--border-secondary);
     background: transparent;
 
-    font-family: var(--font-family-inter);
+    font-family: var(--font-family-primary);
     color: var(--text-primary);
     font-size: 14px;
     line-height: 20px;
@@ -132,7 +137,7 @@ onMounted(() => {
     z-index: 10;
     overflow: hidden;
 
-    & > div {
+    &__item {
       cursor: pointer;
       user-select: none;
 
@@ -153,8 +158,8 @@ onMounted(() => {
       }
     }
 
-    p {
-      font-family: var(--font-family-inter);
+    &__name {
+      font-family: var(--font-family-primary);
       color: var(--text-primary);
       font-size: 14px;
       line-height: 20px;

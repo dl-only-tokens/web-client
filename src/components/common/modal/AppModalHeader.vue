@@ -1,28 +1,22 @@
 <script setup lang="ts">
-import { ICON_NAMES } from '@/enums'
+import { ICON_NAME } from '@/enums'
 
 import AppIcon from '../AppIcon.vue'
 
 defineProps<{
   title?: string
 }>()
-
-const emit = defineEmits(['update:is-shown'])
-
-const closeModal = () => {
-  emit('update:is-shown', false)
-}
 </script>
 
 <template>
-  <div v-if="title" class="modal-pane__header">
-    <h3>{{ title }}</h3>
-    <app-icon :name="ICON_NAMES.close" @click="closeModal" />
+  <div v-if="title" class="app-modal-header">
+    <h3 class="app-modal-header__title">{{ title }}</h3>
+    <app-icon :name="ICON_NAME.close" />
   </div>
 </template>
 
 <style lang="scss" scoped>
-.modal-pane__header {
+.app-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -35,7 +29,7 @@ const closeModal = () => {
     padding: 0 16px;
   }
 
-  h3 {
+  &__title {
     font-weight: 600;
   }
 

@@ -1,8 +1,8 @@
-export enum ROUTE_NAMES {
+export enum ROUTE_NAME {
   main = 'main',
   checkout = 'checkout',
   paymentSuccess = 'payment-success',
   termsOfUse = 'terms-of-use',
   privacyPolicy = 'privacy-policy',
-  notFound = '404',
+  notFound = 'not-found',
 }

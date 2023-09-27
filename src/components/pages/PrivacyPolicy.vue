@@ -4,8 +4,6 @@ import { AppContainer } from '@/components/common'
 
 <template>
   <app-container>
-    <transition name="modal">
-      <span>Privacy policy</span>
-    </transition>
+    <span>Privacy policy</span>
   </app-container>
 </template>

@@ -7,7 +7,7 @@ export type Chain = {
   tokenDecimals: number
 }
 
-const chains: Chain[] = [
+const chainsMap: Chain[] = [
   {
     id: 1,
     name: 'Ethereum',
@@ -67,7 +67,7 @@ const chains: Chain[] = [
 ]
 
 export const getChainInfoById = (chainId: string | number): Chain => {
-  const chain = chains.find(v => v.id == chainId)
+  const chain = chainsMap.find(v => v.id == chainId)
   if (!chain) {
     throw new Error(`Chain with id '${chainId}' isn't found`)
   }
@@ -76,7 +76,7 @@ export const getChainInfoById = (chainId: string | number): Chain => {
 }
 
 export const getChainInfoByName = (name: string): Chain => {
-  const chain = chains.find(v => v.name.toLowerCase() === name.toLowerCase())
+  const chain = chainsMap.find(v => v.name.toLowerCase() === name.toLowerCase())
   if (!chain) {
     throw new Error(`Chain with name '${name}' isn't found`)
   }

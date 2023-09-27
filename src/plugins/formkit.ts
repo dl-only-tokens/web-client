@@ -1,6 +1,6 @@
 import { defaultConfig as formkitDefaultConfig, plugin as formkitPlugin } from '@formkit/vue'
 
-import { isEtherAddress } from './ethers'
+import { isEtherAddress } from '@/helpers'
 
 type FormKitNode<V = unknown> = {
   readonly value: V
