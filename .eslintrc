@@ -1,0 +1,53 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "parser": "vue-eslint-parser",
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "prettier",
+    "simple-import-sort"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:vue/vue3-recommended",
+    "@vue/eslint-config-typescript/recommended",
+    "prettier"
+  ],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "printWidth": 120,
+        "trailingComma": "all",
+        "endOfLine": "auto",
+        "tabWidth": 2,
+        "semi": false,
+        "singleQuote": true,
+        "bracketSpacing": true,
+        "bracketSameLine": false,
+        "arrowParens": "avoid"
+      }
+    ],
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "no-return-await": "error",
+    "object-curly-spacing": ["error", "always"],
+    "no-var": "error",
+    "linebreak-style": ["error", "unix"],
+    "generator-star-spacing": "off",
+    "no-console": ["error", { "allow": ["error"] }],
+    "padding-line-between-statements": ["error", { "blankLine": "always", "prev": "*", "next": "return" }],
+    "vue/multi-word-component-names": "off",
+    "vue/component-definition-name-casing": ["error", "kebab-case"],
+    "vue/component-name-in-template-casing": ["error", "kebab-case"]
+  }
+}
